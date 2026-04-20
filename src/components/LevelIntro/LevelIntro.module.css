@@ -1,0 +1,161 @@
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.85); /* Dark cyberpunk tint */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(8px);
+}
+
+.modal {
+  display: flex;
+  width: 900px;
+  max-width: 95vw;
+  background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+  border: 2px solid #3b82f6; /* Blue premium glow */
+  box-shadow: 0 0 40px rgba(59, 130, 246, 0.3), inset 0 0 20px rgba(59, 130, 246, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.leftPane {
+  flex: 1;
+  background: radial-gradient(circle at center, rgba(59, 130, 246, 0.2) 0%, transparent 70%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  border-right: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.avatarContainer {
+  position: relative;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  border: 4px solid #3b82f6;
+  box-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1e293b;
+}
+
+.pixelAvatar {
+  width: 120px;
+  height: 120px;
+  background-color: var(--white);
+  /* Basic 8-bit bot shape placeholder using box-shadows */
+  box-shadow: 
+    inset -10px -10px 0 rgba(0,0,0,0.2),
+    0 0 0 4px #000;
+  clip-path: polygon(
+    20% 0, 80% 0, 100% 20%, 100% 80%, 80% 100%, 20% 100%, 0 80%, 0 20%
+  );
+}
+
+.levelBadge {
+  position: absolute;
+  bottom: -15px;
+  background: #3b82f6;
+  color: #fff;
+  padding: 8px 24px;
+  border-radius: 20px;
+  font-family: var(--font-pixel);
+  font-size: 14px;
+  border: 2px solid #60a5fa;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.5);
+}
+
+.rightPane {
+  flex: 2;
+  padding: 50px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.badge {
+  display: inline-block;
+  align-self: flex-start;
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.title {
+  font-size: 32px;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+.subtitle {
+  font-size: 18px;
+  color: #60a5fa;
+  margin-bottom: 30px;
+  font-weight: normal;
+}
+
+.quoteBox {
+  background: rgba(0, 0, 0, 0.4);
+  border-left: 4px solid #3b82f6;
+  padding: 20px;
+  border-radius: 0 8px 8px 0;
+  margin-bottom: 40px;
+  font-style: italic;
+  color: #cbd5e1;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.startBtn {
+  background: #3b82f6;
+  color: #fff;
+  font-size: 18px;
+  padding: 16px 32px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: all 0.3s ease;
+  font-family: var(--font-thai);
+  font-weight: bold;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+}
+
+.startBtn:hover {
+  background: #2563eb;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6);
+}
+
+@media (max-width: 800px) {
+  .modal {
+    flex-direction: column;
+  }
+  .leftPane {
+    border-right: none;
+    border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+    padding: 30px;
+  }
+  .avatarContainer {
+    width: 150px;
+    height: 150px;
+  }
+  .rightPane {
+    padding: 30px;
+  }
+  .title {
+    font-size: 24px;
+  }
+}

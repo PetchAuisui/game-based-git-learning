@@ -1,0 +1,90 @@
+/* src/app/globals.css */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Sarabun:wght@400;700&display=swap');
+
+:root {
+  --pixel: 3px;
+  --bg: #1a1c2c;
+  --bg2: #16213e;
+  --panel: #0f3460;
+  --panel2: #1a1a2e;
+  --accent: #e94560;
+  --gold: #ffd700;
+  --green: #00ff87;
+  --cyan: #00d4ff;
+  --purple: #9d4edd;
+  --orange: #ff6b35;
+  --white: #f0f0f0;
+  --gray: #8892a4;
+  --win-gray: #c0c0c0;
+  --win-white: #ffffff;
+  --win-dark-gray: #808080;
+  --win-black: #000000;
+  --win-blue: #000080;
+  --terminal-green: #00ff00;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  image-rendering: pixelated;
+}
+
+body {
+  background: var(--bg);
+  color: var(--white);
+  font-family: 'Sarabun', sans-serif;
+  height: 100vh;
+  overflow: hidden;
+}
+
+h1, h2, h3, .pixel-font {
+  font-family: 'Press Start 2P', cursive;
+}
+
+/* PIXEL BOX UTILITIES */
+.px-box {
+  border: 4px solid #000;
+  box-shadow: 4px 4px 0 #000;
+  background: var(--panel2);
+}
+
+.px-btn {
+  font-family: 'Press Start 2P', cursive;
+  border: 3px solid #000;
+  box-shadow: 3px 3px 0 #000;
+  cursor: pointer;
+  padding: 10px 20px;
+  background: var(--win-gray);
+  transition: transform 0.05s, box-shadow 0.05s;
+}
+
+.px-btn:active {
+  transform: translate(3px, 3px);
+  box-shadow: none;
+}
+
+/* Scrollbar Style */
+::-webkit-scrollbar {
+  width: 12px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg2);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--panel);
+  border: 2px solid #000;
+}
+
+/* Animations */
+@keyframes winBlink { 0%,90%,100%{background:#ffd700} 92%,98%{background:#2a3a5c} }
+@keyframes lightBlink { 0%,49%{opacity:1} 50%,100%{opacity:0} }
+@keyframes walkIn {
+  0%  { left:-60px; transform:scaleX(1); }
+  45% { left:45%; transform:scaleX(1); }
+  50% { left:45%; transform:scaleX(-1); }
+  51% { left:45%; transform:scaleX(1); }
+  100%{ left:50%; transform:scaleX(1) translateX(-50%); }
+}
+@keyframes scrollText { to { margin-top:-80px; } }
+@keyframes cloudMove { to { left:120px; opacity:0; } }

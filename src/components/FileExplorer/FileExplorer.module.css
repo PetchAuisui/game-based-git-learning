@@ -1,0 +1,73 @@
+/* src/components/FileExplorer/FileExplorer.module.css */
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #fff;
+  border: 2px solid var(--win-dark-gray);
+}
+
+.breadcrumb {
+  background: var(--win-gray);
+  padding: 4px 8px;
+  font-size: 10px;
+  border-bottom: 2px solid var(--win-dark-gray);
+  color: #000;
+}
+
+.fileList {
+  padding: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-content: flex-start;
+}
+
+.fileItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.icon {
+  font-size: 32px;
+  margin-bottom: 5px;
+}
+
+.name {
+  font-size: 10px;
+  word-break: break-all;
+  padding: 2px;
+}
+
+.statusLabel {
+  font-size: 8px;
+  margin-top: 4px;
+  color: var(--win-dark-gray);
+}
+
+/* Status Colors */
+.untracked {
+  color: #ff0000;
+  text-decoration: underline;
+}
+
+.staged {
+  color: #00aa00;
+  font-weight: bold;
+}
+
+.committed {
+  color: #0000ff;
+}
+
+.empty {
+  color: #888;
+  width: 100%;
+  text-align: center;
+  margin-top: 50px;
+  font-size: 10px;
+}

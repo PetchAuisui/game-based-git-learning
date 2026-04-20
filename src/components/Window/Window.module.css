@@ -1,0 +1,60 @@
+/* src/components/Window/Window.module.css */
+.window {
+  background: var(--win-gray);
+  border-top: var(--pixel-border) solid var(--win-white);
+  border-left: var(--pixel-border) solid var(--win-white);
+  border-right: var(--pixel-border) solid var(--win-dark-gray);
+  border-bottom: var(--pixel-border) solid var(--win-dark-gray);
+  box-shadow: 2px 2px 0px var(--win-black);
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+}
+
+.titleBar {
+  background: var(--win-blue);
+  color: white;
+  padding: 4px 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10px;
+  margin-bottom: 4px;
+}
+
+.titleText {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.titleButtons {
+  display: flex;
+  gap: 2px;
+}
+
+.winButton {
+  background: var(--win-gray);
+  border: 2px solid;
+  border-color: var(--win-white) var(--win-dark-gray) var(--win-dark-gray) var(--win-white);
+  width: 18px;
+  height: 18px;
+  font-size: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.winButton:active {
+  border-color: var(--win-dark-gray) var(--win-white) var(--win-white) var(--win-dark-gray);
+  padding: 1px 0 0 1px;
+}
+
+.content {
+  flex: 1;
+  background: var(--win-gray);
+  overflow: auto;
+  padding: 8px;
+}

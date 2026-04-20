@@ -1,0 +1,147 @@
+/* src/components/TitleScreen/TitleScreen.module.css */
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  overflow: hidden;
+  z-index: 100;
+}
+
+.starsCanvas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.pixelBuilding {
+  margin: 0 auto 24px;
+  position: relative;
+  width: 200px;
+  height: 140px;
+}
+
+.pbBody {
+  position: absolute; bottom: 0; left: 40px;
+  width: 120px; height: 100px;
+  background: #2a3a5c;
+  border: 4px solid #000;
+}
+
+.pbRoof {
+  position: absolute; bottom: 100px; left: 40px;
+  width: 120px; height: 24px;
+  background: #1e2d4a;
+  border: 4px solid #000;
+  border-bottom: none;
+}
+
+.pbSign {
+  position: absolute; bottom: 64px; left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent);
+  border: 3px solid #000;
+  padding: 3px 8px;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 5px;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.pbWindow {
+  position: absolute;
+  width: 18px; height: 16px;
+  background: var(--gold);
+  border: 3px solid #000;
+  animation: winBlink 3s infinite;
+}
+
+.pw1 { bottom: 72px; left: 52px; }
+.pw2 { bottom: 72px; left: 80px; }
+.pw3 { bottom: 72px; left: 108px; }
+.pw4 { bottom: 44px; left: 52px; animation-delay: 1s; }
+.pw5 { bottom: 44px; left: 80px; animation-delay: 0.5s; }
+.pw6 { bottom: 44px; left: 108px; animation-delay: 1.5s; }
+
+.pbDoor {
+  position: absolute; bottom: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 24px; height: 32px;
+  background: #0f1c3a;
+  border: 3px solid #000;
+  border-bottom: none;
+}
+
+.pbAntenna {
+  position: absolute; bottom: 124px; left: 50%;
+  transform: translateX(-50%);
+  width: 4px; height: 20px;
+  background: #555;
+  border: 2px solid #000;
+}
+
+.pbLight {
+  position: absolute; bottom: 143px; left: 50%; transform: translateX(-50%);
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid #000;
+  animation: lightBlink 1s infinite;
+}
+
+.titleLogo {
+  font-family: 'Press Start 2P', cursive;
+  line-height: 1.6;
+  text-shadow: 4px 4px 0 #000;
+  margin-bottom: 8px;
+}
+
+.t1 { font-size: 32px; color: var(--cyan); display: block; }
+.t2 { font-size: 22px; color: var(--gold); display: block; letter-spacing: 4px; }
+
+.titleSub {
+  font-size: 16px;
+  color: var(--gray);
+  margin: 12px 0 32px;
+}
+
+.titleBtns { 
+  display: flex; gap: 16px; flex-direction: column; align-items: center; 
+}
+
+.btnGame {
+  background: var(--gold);
+  color: #000;
+  font-size: 11px;
+  padding: 14px 40px;
+  letter-spacing: 2px;
+}
+
+.infoRow {
+  margin-top: 32px;
+  display: flex;
+  gap: 40px;
+  justify-content: center;
+}
+
+.infoCol { text-align: center; }
+
+.infoValGold { font-family: 'Press Start 2P', cursive; font-size: 18px; color: var(--gold); }
+.infoValCyan { font-family: 'Press Start 2P', cursive; font-size: 18px; color: var(--cyan); }
+.infoValGreen { font-family: 'Press Start 2P', cursive; font-size: 18px; color: var(--green); }
+
+.infoLbl { font-family: 'Press Start 2P', cursive; font-size: 6px; color: var(--gray); margin-top: 4px; }
+
+.credits {
+  position: absolute; bottom: 20px;
+  font-size: 10px; color: var(--gray); font-family: 'Press Start 2P', cursive;
+}

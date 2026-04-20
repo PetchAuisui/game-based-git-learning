@@ -1,0 +1,38 @@
+/* src/components/QuestPanel/QuestPanel.module.css */
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+}
+
+.qBlock {
+  border: 4px solid var(--panel);
+  background: var(--panel2);
+  padding: 20px;
+  border-radius: 8px; /* Slightly modernizing the border if needed, or keep pixel corners */
+}
+
+/* Reverting border-radius to keep pixel art theme steady, matching original intent but layout shifted */
+.qBlock {
+  border-radius: 0; 
+  box-shadow: 4px 4px 0 #000;
+}
+
+.qTitle {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 8px;
+  margin-bottom: 15px;
+  border-bottom: 2px dashed #333;
+  padding-bottom: 10px;
+}
+
+.green { color: var(--green); }
+.gold { color: var(--gold); }
+.goldText { color: var(--gold); }
+
+.qBlock p {
+  font-size: 14px;
+  line-height: 1.6;
+}
+

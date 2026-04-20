@@ -1,0 +1,62 @@
+/* src/components/HUD/HUD.module.css */
+.hud {
+  display: flex;
+  align-items: center;
+  background: var(--panel2);
+  border-bottom: 4px solid #000;
+  height: 60px;
+  width: 100%;
+}
+
+.hudSection {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 20px;
+  height: 100%;
+  border-right: 3px solid #000;
+}
+
+.hudLabel {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 8px;
+  color: var(--gray);
+  margin-bottom: 4px;
+}
+
+.hudVal {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 14px;
+}
+
+.cyan { color: var(--cyan); }
+.gold { color: var(--gold); }
+.orange { color: var(--orange); }
+
+.hpHearts {
+  display: flex;
+  gap: 4px;
+}
+
+.heart {
+  font-size: 16px;
+  transition: all 0.3s;
+}
+
+.lost {
+  filter: grayscale(1) opacity(0.3);
+  transform: scale(0.8);
+}
+
+.timerSection {
+  margin-left: auto;
+  border-right: none;
+  border-left: 3px solid #000;
+  align-items: center;
+}
+
+.timerNum {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 18px;
+  color: var(--white);
+}

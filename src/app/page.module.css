@@ -1,0 +1,115 @@
+/* src/app/page.module.css */
+.main {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+}
+
+.gameWrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+.mainContent {
+  display: grid;
+  grid-template-columns: 1fr 380px; /* Right column represents side objectives/files */
+  flex: 1;
+  overflow: hidden;
+  background: #050a10; /* Dark background similar to terminal/game area */
+}
+
+.leftCol {
+  display: flex;
+  flex-direction: column;
+  border-right: 4px solid #000;
+  overflow: hidden;
+}
+
+.graphWrapper {
+  flex-shrink: 0;
+  border-bottom: 4px solid #000;
+}
+
+.terminalWrapper {
+  flex: 1;
+  overflow: hidden;
+}
+
+.rightCol {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.questWrapper {
+  flex-shrink: 0;
+  border-bottom: 4px solid #000;
+}
+
+.explorerWrapper {
+  flex: 1;
+  background: var(--panel2);
+  overflow: hidden;
+}
+
+.levelCompleteOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  backdrop-filter: blur(4px);
+}
+
+.lcBox {
+  background: var(--panel);
+  border: 4px solid var(--gold);
+  padding: 40px;
+  text-align: center;
+  box-shadow: 8px 8px 0 #000;
+}
+
+.lcBox h2 {
+  font-family: 'Press Start 2P', cursive;
+  color: var(--green);
+  text-shadow: 2px 2px 0 #000;
+  margin-bottom: 20px;
+}
+
+.lcScore {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.lcStars {
+  font-size: 32px;
+  margin-bottom: 30px;
+  letter-spacing: 10px;
+}
+
+.lcBtn {
+  background: var(--gold);
+  color: #000;
+  font-size: 14px;
+  padding: 15px 30px;
+}
+
+@media (max-width: 1000px) {
+  .mainContent {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    overflow-y: auto;
+  }
+  
+  .leftCol {
+    height: 300px;
+  }
+}
+
