@@ -41,28 +41,31 @@ const HUD: React.FC<HUDProps> = ({ stage, hp, score, streak, timeLeft, isObservi
 
       <div className={styles.hudSection}>
         <div className={styles.hudLabel}>STREAK</div>
-        <div className={`${styles.hudVal} ${styles.orange}`}>×{streak}</div>
+        <div className={`${styles.hudVal} ${styles.orange}`}>
+          {streak > 2 && <span className={styles.streakFire}>🔥</span>}
+          ×{streak}
+        </div>
       </div>
 
       <div className={`${styles.hudSection} ${styles.timerSection}`}>
-        <div className={styles.timerNum}>{timeLeft}</div>
+        <div className={`${styles.timerNum} ${timeLeft <= 15 ? styles.timerWarning : ''}`}>
+          {timeLeft}
+        </div>
         <div className={styles.hudLabel}>SEC</div>
       </div>
 
-      <div style={{ marginLeft: 'auto', display: 'flex', gap: '10px', alignItems: 'center' }}>
+      <div className={styles.controls}>
         {isObserving && (
           <button 
-            className="px-btn" 
+            className={`${styles.observeBtn} px-btn`} 
             onClick={onCompleteStage} 
-            style={{ background: 'var(--gold)', color: '#000', padding: '10px 20px', fontSize: '14px' }}
           >
             รับผลสรุปคะแนน 🌟
           </button>
         )}
         <button 
-          className="px-btn" 
+          className={`${styles.menuBtn} px-btn`} 
           onClick={onReturnMenu} 
-          style={{ background: 'transparent', border: '2px solid var(--gray)', color: 'var(--gray)', padding: '10px 15px', fontSize: '12px' }}
         >
           กลับเมนูหลัก ⏏
         </button>
