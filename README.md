@@ -1,7 +1,5 @@
 # 🚀 Git Simulator Game
 
-![Git Simulator Hero](/Users/petchauisui/.gemini/antigravity/brain/792e0300-ebe0-4234-bf01-7013436d2007/git_game_mockup_1776663058887.png)
-
 Welcome to **Git Simulator**, an interactive, story-driven web application designed to help developers master Git through gamification. Step into the shoes of a new developer and complete missions given by your Boss to learn the core workflows of Git!
 
 ## ✨ Features

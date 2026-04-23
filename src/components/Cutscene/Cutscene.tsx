@@ -30,33 +30,54 @@ const Cutscene: React.FC<CutsceneProps> = ({ onComplete }) => {
   return (
     <div className={styles.screen}>
       <div className={styles.officeScene}>
+        <div className={styles.ambientLight} />
         <div className={styles.officeBg} />
-        <div className={styles.officeFloor} />
-        <div className={styles.officeWindowBg}>
-          <div className={styles.windowCloud} />
+        
+        {/* Large Panoramic Window */}
+        <div className={styles.panoramicWindow}>
+           <div className={styles.cityscape}>
+              <div className={styles.moon} />
+              <div className={styles.cityBuildings} />
+           </div>
         </div>
+
+        <div className={styles.officeFloor} />
+
+        {/* Office Elements */}
+        <div className={styles.whiteboard}>
+           <div className={styles.wbText}>Git Workflow<br/>- pull<br/>- commit<br/>- push</div>
+        </div>
+
         <div className={styles.officePlant}>🌵</div>
-        <div className={styles.officeDesk} />
+        
+        <div className={styles.officeDesk}>
+           <div className={styles.deskTop} />
+           <div className={styles.deskLegLeft} />
+           <div className={styles.deskLegRight} />
+           <div className={styles.deskGlow} />
+        </div>
         
         <div className={styles.officeMonitor}>
           <div className={styles.monitorScreen}>
             <div className={styles.monitorText}>
-              $ git status<br/>$ git add .<br/>$ git commit -m<br/>"feature"<br/>$ git push
+              $ git status<br/>$ git add .<br/>$ git commit -m "feat"<br/>$ git push
             </div>
           </div>
         </div>
         <div className={styles.monitorStand} />
 
+        {/* Characters */}
         <div className={styles.sceneChars}>
-          <div className={styles.bossWrapper}>
+          <div className={`${styles.bossWrapper} ${currentDialog.spk === 'หัวหน้า' ? styles.speaking : ''}`}>
              <Character type="boss" label="หัวหน้า" />
           </div>
-          <div className={styles.playerWrapper}>
+          <div className={`${styles.playerWrapper} ${currentDialog.spk === 'คุณ' ? styles.speaking : ''}`}>
              <Character type="player" label="คุณ" />
           </div>
         </div>
 
-        <div className={styles.speechBubble}>
+        {/* Speech Bubble Position Changes Based on Speaker */}
+        <div className={`${styles.speechBubble} ${currentDialog.spk === 'หัวหน้า' ? styles.bubbleBoss : styles.bubblePlayer}`}>
           <span className={styles.bubbleName}>{currentDialog.spk}</span>
           <span dangerouslySetInnerHTML={{ __html: currentDialog.txt }} />
         </div>
