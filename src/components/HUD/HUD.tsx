@@ -18,7 +18,7 @@ const HUD: React.FC<HUDProps> = ({ stage, hp, score, streak, timeLeft, isObservi
     <div className={styles.hud}>
       <div className={styles.hudSection}>
         <div className={styles.hudLabel}>STAGE</div>
-        <div className={`${styles.hudVal} ${styles.cyan}`}>{stage}</div>
+        <div className={styles.stageBadge}>{stage}</div>
       </div>
       
       <div className={styles.hudSection}>

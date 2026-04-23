@@ -1,22 +1,39 @@
 /* src/components/GitGraph/GitGraph.module.css */
 .container {
-  height: 120px;
-  background: #030810;
-  border-top: 4px solid #000;
+  height: 90px;
+  background: rgba(5, 8, 16, 0.95);
   position: relative;
   overflow: hidden;
+}
+
+/* Subtle grid lines background */
+.container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(34,211,238,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34,211,238,0.04) 1px, transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none;
 }
 
 .label {
   position: absolute;
   top: 8px;
-  left: 12px;
-  font-family: 'Press Start 2P', cursive;
-  font-size: 8px;
-  color: #333;
+  left: 14px;
+  font-family: 'Fira Code', monospace;
+  font-size: 9px;
+  color: var(--gray);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.6;
+  z-index: 2;
 }
 
 .canvas {
   width: 100%;
   height: 100%;
+  position: relative;
+  z-index: 1;
 }

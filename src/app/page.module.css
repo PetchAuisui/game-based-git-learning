@@ -5,6 +5,9 @@
   display: flex;
   flex-direction: column;
   background: var(--bg);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 20% -10%, rgba(34, 211, 238, 0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 110%, rgba(168, 85, 247, 0.06) 0%, transparent 60%);
 }
 
 .gameWrapper {
@@ -17,88 +20,130 @@
 
 .mainContent {
   display: grid;
-  grid-template-columns: 1fr 380px; /* Right column represents side objectives/files */
+  grid-template-columns: 1fr 340px;
   flex: 1;
   overflow: hidden;
-  background: #050a10; /* Dark background similar to terminal/game area */
+  gap: 10px;
+  padding: 10px;
+  background: transparent;
 }
 
 .leftCol {
   display: flex;
   flex-direction: column;
-  border-right: 4px solid #000;
+  gap: 10px;
   overflow: hidden;
+  min-height: 0;
 }
 
 .graphWrapper {
   flex-shrink: 0;
-  border-bottom: 4px solid #000;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border-dim);
 }
 
 .terminalWrapper {
   flex: 1;
   overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid var(--border-dim);
 }
 
 .rightCol {
   display: flex;
   flex-direction: column;
+  gap: 10px;
   overflow: hidden;
+  min-height: 0;
 }
 
 .questWrapper {
   flex-shrink: 0;
-  border-bottom: 4px solid #000;
 }
 
 .explorerWrapper {
   flex: 1;
-  background: var(--panel2);
   overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid var(--border-dim);
 }
 
+/* ── Level Complete Overlay ── */
 .levelCompleteOverlay {
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.8);
+  background: rgba(5, 8, 16, 0.85);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 200;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(12px);
+  animation: fadeIn 0.3s ease;
 }
 
 .lcBox {
-  background: var(--panel);
-  border: 4px solid var(--gold);
-  padding: 40px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(24px);
+  border-radius: 24px;
+  padding: 50px 60px;
   text-align: center;
-  box-shadow: 8px 8px 0 #000;
+  box-shadow:
+    0 30px 80px rgba(0,0,0,0.6),
+    0 0 60px rgba(34,211,238,0.08),
+    inset 0 1px 0 rgba(255,255,255,0.1);
+  animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .lcBox h2 {
   font-family: 'Press Start 2P', cursive;
-  color: var(--green);
-  text-shadow: 2px 2px 0 #000;
-  margin-bottom: 20px;
+  font-size: 20px;
+  background: linear-gradient(135deg, var(--cyan), var(--green));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 24px;
+  letter-spacing: 2px;
 }
 
 .lcScore {
-  font-size: 20px;
-  margin-bottom: 10px;
+  font-family: 'Inter', sans-serif;
+  font-size: 18px;
+  color: var(--white);
+  margin-bottom: 8px;
+  font-weight: 500;
 }
 
 .lcStars {
-  font-size: 32px;
-  margin-bottom: 30px;
-  letter-spacing: 10px;
+  font-size: 36px;
+  margin-bottom: 36px;
+  letter-spacing: 12px;
+  filter: drop-shadow(0 0 12px rgba(251, 191, 36, 0.6));
 }
 
 .lcBtn {
-  background: var(--gold);
-  color: #000;
-  font-size: 14px;
-  padding: 15px 30px;
+  background: linear-gradient(135deg, var(--cyan), var(--purple));
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 14px 36px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 0 20px rgba(34,211,238,0.3);
+  letter-spacing: 0.05em;
+}
+
+.lcBtn:hover {
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 8px 30px rgba(34,211,238,0.5);
+}
+
+.lcBtn:active {
+  transform: translateY(0) scale(0.98);
 }
 
 @media (max-width: 1000px) {
@@ -107,9 +152,8 @@
     grid-template-rows: auto 1fr;
     overflow-y: auto;
   }
-  
+
   .leftCol {
     height: 300px;
   }
 }
-

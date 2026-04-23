@@ -3,71 +3,136 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: #fff;
-  border: 2px solid var(--win-dark-gray);
+  background: rgba(8, 10, 20, 0.9);
+  font-family: 'Fira Code', 'Inter', monospace;
+  overflow: hidden;
 }
 
+/* Breadcrumb / path bar */
 .breadcrumb {
-  background: var(--win-gray);
-  padding: 4px 8px;
-  font-size: 10px;
-  border-bottom: 2px solid var(--win-dark-gray);
-  color: #000;
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid var(--border-dim);
+  padding: 7px 14px;
+  font-size: 11px;
+  color: var(--gray);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
 }
 
+.breadcrumb::before {
+  content: '📁';
+  font-size: 12px;
+}
+
+/* File list area */
 .fileList {
-  padding: 10px;
+  padding: 12px;
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 16px;
   align-content: flex-start;
+  overflow-y: auto;
+  flex: 1;
 }
 
+/* Individual file item */
 .fileItem {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100px;
+  width: 80px;
   text-align: center;
   cursor: pointer;
+  padding: 10px 6px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+  position: relative;
 }
 
+.fileItem:hover {
+  background: var(--glass-hover);
+  border-color: var(--border-dim);
+  transform: translateY(-2px);
+}
+
+/* Icon */
 .icon {
-  font-size: 32px;
-  margin-bottom: 5px;
+  font-size: 28px;
+  margin-bottom: 6px;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));
+  transition: transform 0.2s;
 }
 
+.fileItem:hover .icon {
+  transform: scale(1.1);
+}
+
+/* Filename */
 .name {
   font-size: 10px;
   word-break: break-all;
-  padding: 2px;
+  color: var(--white);
+  font-weight: 500;
+  line-height: 1.3;
 }
 
+/* Status chip */
 .statusLabel {
   font-size: 8px;
-  margin-top: 4px;
-  color: var(--win-dark-gray);
+  margin-top: 5px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 /* Status Colors */
-.untracked {
-  color: #ff0000;
-  text-decoration: underline;
+.untracked .statusLabel {
+  background: rgba(244, 63, 94, 0.15);
+  color: var(--accent);
+  border: 1px solid rgba(244, 63, 94, 0.3);
 }
 
-.staged {
-  color: #00aa00;
-  font-weight: bold;
+.staged .statusLabel {
+  background: rgba(74, 222, 128, 0.15);
+  color: var(--green);
+  border: 1px solid rgba(74, 222, 128, 0.3);
 }
 
-.committed {
-  color: #0000ff;
+.committed .statusLabel {
+  background: rgba(34, 211, 238, 0.1);
+  color: var(--cyan);
+  border: 1px solid rgba(34, 211, 238, 0.25);
 }
 
+/* Untracked glow on icon */
+.untracked .icon {
+  filter: drop-shadow(0 0 6px rgba(244, 63, 94, 0.5));
+}
+
+.staged .icon {
+  filter: drop-shadow(0 0 6px rgba(74, 222, 128, 0.5));
+}
+
+.committed .icon {
+  filter: drop-shadow(0 0 6px rgba(34, 211, 238, 0.4));
+}
+
+/* Empty state */
 .empty {
-  color: #888;
+  color: var(--gray);
   width: 100%;
   text-align: center;
-  margin-top: 50px;
-  font-size: 10px;
+  margin-top: 40px;
+  font-size: 13px;
+  font-family: 'Sarabun', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  opacity: 0.6;
 }

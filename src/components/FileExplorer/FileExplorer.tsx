@@ -12,23 +12,29 @@ interface FileExplorerProps {
   files: FileItem[];
 }
 
+const statusLabel: Record<string, string> = {
+  untracked: 'New',
+  staged:    'Staged',
+  committed: 'Saved',
+};
+
 const FileExplorer: React.FC<FileExplorerProps> = ({ files }) => {
   return (
     <div className={styles.container}>
-      <div className={styles.breadcrumb}>C:\Users\GitUser\Project</div>
+      <div className={styles.breadcrumb}>~/project</div>
       <div className={styles.fileList}>
         {files.map(file => (
-          <div key={file.id} className={styles.fileItem}>
+          <div key={file.id} className={`${styles.fileItem} ${styles[file.status]}`}>
             <div className={styles.icon}>📄</div>
-            <div className={`${styles.name} ${styles[file.status]}`}>
-              {file.name}
-            </div>
+            <div className={styles.name}>{file.name}</div>
             <div className={styles.statusLabel}>
-              ({file.status.toUpperCase()})
+              {statusLabel[file.status] ?? file.status}
             </div>
           </div>
         ))}
-        {files.length === 0 && <div className={styles.empty}>Directory is empty</div>}
+        {files.length === 0 && (
+          <div className={styles.empty}>Directory is empty</div>
+        )}
       </div>
     </div>
   );

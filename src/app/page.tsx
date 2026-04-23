@@ -129,7 +129,7 @@ export default function GamePage() {
                  <div className={styles.lcStars}>
                    {stats.score === 100 ? '⭐️⭐️⭐️' : stats.score >= 90 ? '⭐️⭐️' : '⭐️'}
                  </div>
-                 <button className={`px-btn ${styles.lcBtn}`} onClick={handleNextLevel}>NEXT STAGE ▶</button>
+                 <button className={styles.lcBtn} onClick={handleNextLevel}>NEXT STAGE ▶</button>
                </div>
             </div>
           )}

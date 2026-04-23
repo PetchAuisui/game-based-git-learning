@@ -11,7 +11,7 @@ interface TerminalProps {
 
 const Terminal: React.FC<TerminalProps> = ({ onCommand, history }) => {
   const [input, setInput] = useState('');
-  const terminalRef = useRef<HTMLDivElement>(null);
+  const bottomRef = useRef<HTMLDivElement>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,33 +23,66 @@ const Terminal: React.FC<TerminalProps> = ({ onCommand, history }) => {
 
   // Auto-scroll to bottom
   useEffect(() => {
-    if (terminalRef.current) {
-      terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
-    }
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [history]);
 
   return (
-    <div className={styles.container} ref={terminalRef} onClick={() => document.getElementById('term-input')?.focus()}>
-      <div className={styles.output}>
-        <div className={styles.welcome}>Git Simulator v1.0.0 [Release 95]</div>
-        {history.map((line, i) => (
-          <div key={i} className={line.startsWith('Error:') ? styles.errorLine : styles.line}>
-            {line}
-          </div>
-        ))}
+    <div
+      className={styles.container}
+      onClick={() => document.getElementById('term-input')?.focus()}
+    >
+      {/* macOS-style chrome bar */}
+      <div className={styles.termBar}>
+        <span className={`${styles.dot} ${styles.dotRed}`} />
+        <span className={`${styles.dot} ${styles.dotYellow}`} />
+        <span className={`${styles.dot} ${styles.dotGreen}`} />
+        <span className={styles.termTitle}>git-simulator — bash</span>
       </div>
-      <form onSubmit={handleSubmit} className={styles.inputArea}>
-        <span className={styles.prompt}>C:\PROJECT&gt;</span>
-        <input
-          id="term-input"
-          type="text"
-          className={styles.input}
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          autoFocus
-          autoComplete="off"
-        />
-      </form>
+
+      {/* Scrollable body */}
+      <div className={styles.termBody}>
+        <div className={styles.output}>
+          <div className={styles.welcome}>
+            <span style={{ color: 'var(--cyan)' }}>Git Simulator</span>{' '}
+            <span style={{ color: 'var(--gray)' }}>v1.0.0 — type a command to start</span>
+          </div>
+
+          {history.map((line, i) => {
+            const isStr  = typeof line === 'string';
+            const isError = isStr && (line as string).startsWith('Error:');
+            const isCmd   = isStr && (line as string).startsWith('devlab@git');
+            return (
+              <div
+                key={i}
+                className={
+                  isError ? styles.errorLine
+                  : isCmd  ? styles.cmdLine
+                  : styles.line
+                }
+              >
+                {line}
+              </div>
+            );
+          })}
+
+          <div ref={bottomRef} />
+        </div>
+
+        <form onSubmit={handleSubmit} className={styles.inputArea}>
+          <span className={styles.prompt}>~/project $</span>
+          <input
+            id="term-input"
+            type="text"
+            className={styles.input}
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            autoFocus
+            autoComplete="off"
+            spellCheck={false}
+            placeholder="type a git command..."
+          />
+        </form>
+      </div>
     </div>
   );
 };
