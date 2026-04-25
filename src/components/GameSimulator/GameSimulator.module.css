@@ -1,0 +1,158 @@
+/* src/components/GameSimulator/GameSimulator.module.css */
+.gameWrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+.mainContent {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  flex: 1;
+  overflow: hidden;
+  gap: 10px;
+  padding: 10px;
+  background: transparent;
+}
+
+.leftCol {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.graphWrapper {
+  flex-shrink: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border-dim);
+}
+
+.terminalWrapper {
+  flex: 1;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid var(--border-dim);
+}
+
+.rightCol {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.questWrapper {
+  flex-shrink: 0;
+}
+
+.explorerWrapper {
+  flex: 1;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid var(--border-dim);
+}
+
+/* ── Level Complete Overlay ── */
+.levelCompleteOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(5, 8, 16, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  backdrop-filter: blur(12px);
+  animation: fadeIn 0.3s ease;
+}
+
+.lcBox {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(24px);
+  border-radius: 24px;
+  padding: 50px 60px;
+  text-align: center;
+  box-shadow:
+    0 30px 80px rgba(0,0,0,0.6),
+    0 0 60px rgba(34,211,238,0.08),
+    inset 0 1px 0 rgba(255,255,255,0.1);
+  animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.lcBox h2 {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 20px;
+  background: linear-gradient(135deg, var(--cyan), var(--purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 24px;
+  letter-spacing: 2px;
+}
+
+.lcScore {
+  font-family: 'Inter', sans-serif;
+  font-size: 18px;
+  color: var(--white);
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.lcStars {
+  font-size: 36px;
+  margin-bottom: 36px;
+  letter-spacing: 12px;
+  filter: drop-shadow(0 0 12px rgba(251, 191, 36, 0.6));
+}
+
+.lcBtn {
+  background: linear-gradient(135deg, var(--cyan), var(--purple));
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 14px 36px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 0 20px rgba(34,211,238,0.3);
+  letter-spacing: 0.05em;
+}
+
+.lcBtn:hover {
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 8px 30px rgba(34,211,238,0.5);
+}
+
+.lcBtn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@media (max-width: 1000px) {
+  .mainContent {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    overflow-y: auto;
+  }
+
+  .leftCol {
+    height: 300px;
+  }
+}
