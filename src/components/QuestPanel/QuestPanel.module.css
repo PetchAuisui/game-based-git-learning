@@ -13,7 +13,7 @@
   padding: 16px 18px;
   position: relative;
   overflow: hidden;
-  transition: border-color 0.25s;
+  transition: opacity 0.25s;
 }
 
 .qBlock:hover {

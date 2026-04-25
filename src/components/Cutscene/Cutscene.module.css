@@ -237,11 +237,12 @@
   padding: 1vw 1.5vw;
   font-size: 1.2vw; 
   line-height: 1.5;
+  min-width: 15vw;
   max-width: 30vw;
   box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-  bottom: 50vh;
+  bottom: 38vh;
   z-index: 10;
-  transition: all 0.3s ease-in-out;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .speechBubble::after {
@@ -262,16 +263,18 @@
 }
 
 .bubbleBoss {
-  left: 20vw;
+  left: calc(50% - 10vw);
+  transform: translateX(-50%);
 }
-.bubbleBoss::after { left: 40px; }
-.bubbleBoss::before { left: 42px; }
+.bubbleBoss::after { left: 50%; transform: translateX(-50%); }
+.bubbleBoss::before { left: 50%; transform: translateX(-50%); }
 
 .bubblePlayer {
-  left: 45vw;
+  left: calc(50% + 10vw);
+  transform: translateX(-50%);
 }
-.bubblePlayer::after { right: 40px; }
-.bubblePlayer::before { right: 42px; }
+.bubblePlayer::after { left: 50%; transform: translateX(-50%); }
+.bubblePlayer::before { left: 50%; transform: translateX(-50%); }
 
 .bubbleName {
   font-family: inherit;
