@@ -4,9 +4,10 @@ import styles from './TitleScreen.module.css';
 
 interface TitleScreenProps {
   onStart: () => void;
+  onAllLevels: () => void;
 }
 
-const TitleScreen: React.FC<TitleScreenProps> = ({ onStart }) => {
+const TitleScreen: React.FC<TitleScreenProps> = ({ onStart, onAllLevels }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -50,6 +51,27 @@ const TitleScreen: React.FC<TitleScreenProps> = ({ onStart }) => {
     };
   }, []);
 
+  const handlePlay = () => {
+    const saved = localStorage.getItem('devlab_git_game_state');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        const maxIdx = parsed.maxLevelIdx ?? parsed.currentLevelIdx ?? 0;
+        parsed.currentLevelIdx = maxIdx;
+        parsed.currentSectionIdx = 0;
+        localStorage.setItem('devlab_git_game_state', JSON.stringify(parsed));
+      } catch (e) {}
+    }
+    onStart();
+  };
+
+  const handleReset = () => {
+    if (window.confirm('Are you sure you want to reset all progress?')) {
+      localStorage.removeItem('devlab_git_game_state');
+      window.location.reload();
+    }
+  };
+
   return (
     <div className={styles.screen}>
       <canvas ref={canvasRef} className={styles.starsCanvas} />
@@ -81,8 +103,11 @@ const TitleScreen: React.FC<TitleScreenProps> = ({ onStart }) => {
         </div>
 
         <div className={styles.titleBtns}>
-          <button className={`${styles.btnGame} px-btn`} onClick={onStart}>
+          <button className={`${styles.btnGame} px-btn`} onClick={handlePlay}>
             ▶ START GAME
+          </button>
+          <button className={`${styles.btnLevels} px-btn`} onClick={onAllLevels}>
+            ALL LEVELS
           </button>
         </div>
         
@@ -100,6 +125,10 @@ const TitleScreen: React.FC<TitleScreenProps> = ({ onStart }) => {
              <div className={styles.infoLbl}>ลองผิดได้</div>
            </div>
         </div>
+
+        <button className={styles.btnReset} onClick={handleReset}>
+          Reset Progress
+        </button>
 
       </div>
       <div className={styles.credits}>© 2026 DevLab Studio - GIT DI WAA v1.0</div>

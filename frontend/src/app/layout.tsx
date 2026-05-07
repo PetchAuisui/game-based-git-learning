@@ -3,7 +3,7 @@ import './globals.css';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Git Simulator 95',
+  title: 'Game Git For Learning',
   description: 'Learn Git with a retro 8-bit style!',
 };
 

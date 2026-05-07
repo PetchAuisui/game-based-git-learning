@@ -15,6 +15,7 @@ const STORAGE_KEY = 'devlab_git_game_state';
 export function useGameState() {
   // Initialize state from localStorage if available
   const [currentLevelIdx, setCurrentLevelIdx] = useState(0);
+  const [maxLevelIdx, setMaxLevelIdx] = useState(0);
   const [currentSectionIdx, setCurrentSectionIdx] = useState(0);
   const [stats, setStats] = useState<GameStats>({
     score: 100,
@@ -37,6 +38,7 @@ export function useGameState() {
       try {
         const parsed = JSON.parse(saved);
         setCurrentLevelIdx(parsed.currentLevelIdx || 0);
+        setMaxLevelIdx(parsed.maxLevelIdx ?? parsed.currentLevelIdx ?? 0);
         setCurrentSectionIdx(parsed.currentSectionIdx || 0);
         setTotalCoins(parsed.totalCoins || 0);
         setTotalScore(parsed.totalScore || 0);
@@ -52,6 +54,7 @@ export function useGameState() {
   useEffect(() => {
     const stateToSave = {
       currentLevelIdx,
+      maxLevelIdx,
       currentSectionIdx,
       totalCoins,
       totalScore,
@@ -63,7 +66,7 @@ export function useGameState() {
       }
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));
-  }, [currentLevelIdx, currentSectionIdx, totalCoins, totalScore, stats]);
+  }, [currentLevelIdx, maxLevelIdx, currentSectionIdx, totalCoins, totalScore, stats]);
 
   const level: Level = LEVELS[currentLevelIdx] || LEVELS[0];
   const section: LevelSection = level.sections[currentSectionIdx] || level.sections[0];
@@ -93,7 +96,9 @@ export function useGameState() {
     setIsLevelComplete(false);
     setIsObserving(false);
     if (currentLevelIdx + 1 < LEVELS.length) {
-      setCurrentLevelIdx(prev => prev + 1);
+      const nextLevel = currentLevelIdx + 1;
+      setCurrentLevelIdx(nextLevel);
+      setMaxLevelIdx(prev => Math.max(prev, nextLevel));
       setCurrentSectionIdx(0);
       setShowLevelIntro(true);
       setStats({
