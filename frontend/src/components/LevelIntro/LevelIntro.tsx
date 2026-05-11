@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './LevelIntro.module.css';
-import { Level, LevelSection } from '@/data/levels';
+import { Level, LevelSection } from '@/types/types';
 
 interface LevelIntroProps {
   level: Level;

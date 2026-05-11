@@ -5,7 +5,7 @@ import styles from './FileExplorer.module.css';
 interface FileItem {
   id: string;
   name: string;
-  status: 'untracked' | 'staged' | 'committed';
+  status: 'untracked' | 'staged' | 'committed' | 'deleted';
 }
 
 interface FileExplorerProps {

@@ -122,3 +122,61 @@
   font-size: 48px;
   opacity: 0.3;
 }
+
+/* ── Skeleton Loading ── */
+.skeleton {
+  pointer-events: none;
+  min-height: 110px;
+}
+
+.skeletonLine {
+  height: 14px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.06) 25%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.06) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  margin-bottom: 10px;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ── Error State ── */
+.errorBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 48px 24px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 12px;
+  max-width: 480px;
+}
+
+.errorText {
+  color: #fca5a5;
+  font-size: 15px;
+  text-align: center;
+  font-family: 'Inter', sans-serif;
+}
+
+.retryBtn {
+  background: rgba(59, 130, 246, 0.2);
+  border: 1px solid rgba(59, 130, 246, 0.5);
+  color: #93c5fd;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 10px;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.retryBtn:hover {
+  background: rgba(59, 130, 246, 0.4);
+  color: #fff;
+}
+

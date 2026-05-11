@@ -1,32 +1,31 @@
 // src/app/page.tsx
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import TitleScreen from '@/components/TitleScreen/TitleScreen';
 import Cutscene from '@/components/Cutscene/Cutscene';
 import GameSimulator from '@/components/GameSimulator/GameSimulator';
 import LevelSelection from '@/components/LevelSelection/LevelSelection';
+import api from '@/utils/api';
 import styles from './page.module.css';
 
 export default function GamePage() {
   const [screen, setScreen] = useState<'title' | 'cutscene' | 'game' | 'levels'>('title');
 
-  const handleStartGame = () => {
-    let maxIdx = 0;
+  const handleStartGame = useCallback(async () => {
     try {
-      const saved = localStorage.getItem('devlab_git_game_state');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        maxIdx = parsed.maxLevelIdx ?? parsed.currentLevelIdx ?? 0;
+      const res = await api.get('/user/progress');
+      const maxIdx = res.data?.currentHighestLevel ?? 0;
+      if (maxIdx > 0) {
+        setScreen('game');
+      } else {
+        setScreen('cutscene');
       }
-    } catch(e) {}
-    
-    if (maxIdx > 0) {
-      setScreen('game');
-    } else {
+    } catch (e) {
+      // Fallback: if backend is unreachable, go to cutscene (first-time experience)
       setScreen('cutscene');
     }
-  };
+  }, []);
 
   return (
     <main className={styles.main}>
