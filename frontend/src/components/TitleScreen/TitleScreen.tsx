@@ -95,7 +95,7 @@ const TitleScreen: React.FC<TitleScreenProps> = ({ onStart, onAllLevels }) => {
 
         <div className={styles.titleLogo}>
           <span className={styles.t1}>GIT DI WAA!</span>
-          <span className={styles.t2}>กิตดีว้าว!</span>
+          <span className={styles.t2}>กิตดีว้าา!</span>
         </div>
         <div className={styles.titleSub}>
           เรียนรู้ Git ผ่านสถานการณ์จำลองการทำงานจริง<br />
