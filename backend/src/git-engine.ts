@@ -549,7 +549,7 @@ export class GitEngine {
           await git.checkout({
             fs: this.memfs as any,
             dir: '/',
-            ref: target,
+            ref: commitHash,
             force: true // Automatically overwrite unsaved files for sandbox simplicity
           });
         } catch (e) {
@@ -582,11 +582,14 @@ export class GitEngine {
         return { success: false, output: '', error: `Branch '${theirs}' not found` };
       }
 
+      const oursHash = this.branches.get(this.currentBranch) || '';
+      const theirsHash = this.branches.get(theirs) || '';
+
       const result = await git.merge({
         fs: this.memfs as any,
         dir: '/',
-        ours: this.currentBranch,
-        theirs: theirs,
+        ours: oursHash,
+        theirs: theirsHash,
         abortOnConflict: true,
         author: {
           name: 'Sandbox User',
