@@ -190,13 +190,14 @@ const GitGraph: React.FC<GitGraphProps> = ({ data, isInitialized }) => {
                 {/* Branch pills */}
                 {node.branches.map((bName, bIdx) => {
                   const isCurrent = bName === branch;
-                  const pillW = bName.length * 7 + 16;
+                  const labelText = isCurrent ? `HEAD -> ${bName}` : bName;
+                  const pillW = labelText.length * 7 + 20;
                   const pillY = y - 28 - (bIdx * 20);
                   return (
                     <g key={`pill-${bName}`} transform={`translate(${x - pillW / 2}, ${pillY})`}>
-                      <rect width={pillW} height={16} rx={4} fill={isCurrent ? '#a3be8c' : '#4d3a35'} stroke={isCurrent ? '#ffff66' : '#7c625a'} strokeWidth={1} />
+                      <rect width={pillW} height={16} rx={4} fill={isCurrent ? '#ffff66' : '#4d3a35'} stroke={isCurrent ? '#ffff66' : '#7c625a'} strokeWidth={1} />
                       <text x={pillW / 2} y={11} textAnchor="middle" fill={isCurrent ? '#231916' : '#f5ecea'} className={styles.tagText} fontWeight="bold">
-                        {bName}
+                        {labelText}
                       </text>
                     </g>
                   );

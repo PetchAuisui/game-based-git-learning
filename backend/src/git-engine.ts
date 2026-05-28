@@ -51,7 +51,13 @@ export class GitEngine {
       if (existsSync(this.stateFilePath)) {
         const stateStr = readFileSync(this.stateFilePath, 'utf8');
         const state = JSON.parse(stateStr);
-        this.memfs.fromJSON(state.fs);
+        
+        // Use custom deserializer to handle base64 binary encoding
+        if (state.fsData) {
+          this.deserializeFs(state.fsData);
+        } else if (state.fs) {
+          this.memfs.fromJSON(state.fs); // Fallback for old state
+        }
         
         this.commits = new Map(state.commits);
         this.branches = new Map(state.branches);
@@ -65,10 +71,40 @@ export class GitEngine {
     return false;
   }
 
+  private serializeFs(dir: string = '/'): Record<string, string> {
+    const result: Record<string, string> = {};
+    const walk = (currentDir: string) => {
+      const files = this.memfs.readdirSync(currentDir) as string[];
+      for (const file of files) {
+        const fullPath = currentDir === '/' ? `/${file}` : `${currentDir}/${file}`;
+        const stat = this.memfs.statSync(fullPath);
+        if (stat.isDirectory()) {
+          walk(fullPath);
+        } else {
+          const content = this.memfs.readFileSync(fullPath);
+          result[fullPath] = Buffer.from(content).toString('base64');
+        }
+      }
+    };
+    walk(dir);
+    return result;
+  }
+
+  private deserializeFs(data: Record<string, string>) {
+    this.memfs.reset();
+    for (const [filePath, contentBase64] of Object.entries(data)) {
+      const dir = path.dirname(filePath);
+      if (dir !== '/' && !this.memfs.existsSync(dir)) {
+        this.memfs.mkdirSync(dir, { recursive: true });
+      }
+      this.memfs.writeFileSync(filePath, Buffer.from(contentBase64, 'base64'));
+    }
+  }
+
   private saveState(): void {
     try {
       const state = {
-        fs: this.memfs.toJSON(),
+        fsData: this.serializeFs(),
         commits: Array.from(this.commits.entries()),
         branches: Array.from(this.branches.entries()),
         currentBranch: this.currentBranch,
