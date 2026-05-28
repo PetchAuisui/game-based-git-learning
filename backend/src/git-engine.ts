@@ -61,7 +61,8 @@ export class GitEngine {
         
         this.commits = new Map(state.commits);
         this.branches = new Map(state.branches);
-        this.currentBranch = state.currentBranch;
+        this.currentBranch = state.currentBranch || 'main';
+        this.HEAD = state.detachedHead || 'detached';
         this.commitCounter = state.commitCounter;
         return true;
       }
@@ -108,6 +109,7 @@ export class GitEngine {
         commits: Array.from(this.commits.entries()),
         branches: Array.from(this.branches.entries()),
         currentBranch: this.currentBranch,
+        detachedHead: this.HEAD,
         commitCounter: this.commitCounter
       };
       
@@ -316,7 +318,11 @@ export class GitEngine {
       });
 
       // Update the branch to point to the new commit
-      this.branches.set(this.currentBranch, commitId);
+      if (this.currentBranch !== 'detached') {
+        this.branches.set(this.currentBranch, commitId);
+      } else {
+        this.HEAD = commitId;
+      }
 
       return {
         success: true,
@@ -484,7 +490,7 @@ export class GitEngine {
   private async gitCheckout(args: string[]): Promise<CommandResult> {
     try {
       const isNewBranch = args.includes('-b');
-      const target = isNewBranch ? args[args.indexOf('-b') + 1] : args[0];
+      let target = isNewBranch ? args[args.indexOf('-b') + 1] : args[0];
 
       if (!target) {
         return {
@@ -511,15 +517,33 @@ export class GitEngine {
       } else if (this.branches.has(target)) {
         this.currentBranch = target;
       } else {
-        return {
-          success: false,
-          output: '',
-          error: `Branch '${target}' not found`,
-        };
+        // Try to find a matching commit for detached HEAD
+        let targetCommit = target;
+        let found = false;
+        
+        for (const hash of this.commits.keys()) {
+          if (hash.startsWith(target)) {
+            targetCommit = hash;
+            found = true;
+            break;
+          }
+        }
+        
+        if (found) {
+          this.currentBranch = 'detached';
+          this.HEAD = targetCommit;
+          target = targetCommit; // use full hash for isomorphic-git
+        } else {
+          return {
+            success: false,
+            output: '',
+            error: `Branch or commit '${target}' not found`,
+          };
+        }
       }
       
-      // Update the file tree to match the checked out branch
-      const commitHash = this.branches.get(this.currentBranch);
+      // Update the file tree to match the checked out branch or commit
+      const commitHash = this.currentBranch === 'detached' ? this.HEAD : this.branches.get(this.currentBranch);
       if (commitHash && commitHash !== 'HEAD~0') {
         try {
           await git.checkout({
@@ -812,6 +836,13 @@ export class GitEngine {
   }
 
   private getGitGraph(): GitGraph {
+    let headHash = '';
+    if (this.currentBranch === 'detached') {
+      headHash = this.HEAD;
+    } else {
+      headHash = this.branches.get(this.currentBranch) || '';
+    }
+
     return {
       nodes: Array.from(this.commits.values()).map((commit) => ({
         id: commit.id,
@@ -820,7 +851,7 @@ export class GitEngine {
         parent: commit.parent,
       })),
       branches: Object.fromEntries(this.branches),
-      head: 'HEAD',
+      head: headHash,
       currentBranch: this.currentBranch,
     };
   }

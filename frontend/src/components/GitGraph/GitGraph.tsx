@@ -99,12 +99,13 @@ const GitGraph: React.FC<GitGraphProps> = ({ data, isInitialized }) => {
   const paddingX = 60;
   const svgWidth = Math.max(100, nodes.length * commitSpacingX + paddingX * 2);
   const laneHeight = 45;
-  const svgHeight = 45 + (maxLane * laneHeight) + 60; // 45 for top tags, 60 for bottom text
+  const yOffset = 120; // Increased to prevent stacked pills from being cut off at the top
+  const svgHeight = yOffset + (maxLane * laneHeight) + 60; // 60 for bottom text
 
   const coordsMap: Record<string, { x: number; y: number }> = {};
   nodes.forEach((node, idx) => {
     const lane = commitLanes[node.id] ?? 0;
-    const y = 45 + lane * laneHeight;
+    const y = yOffset + lane * laneHeight;
     // nodes is newest-first, so idx 0 is newest. We put newest on the right.
     const x = svgWidth - (paddingX + idx * commitSpacingX);
     coordsMap[node.id] = { x, y };
@@ -191,12 +192,14 @@ const GitGraph: React.FC<GitGraphProps> = ({ data, isInitialized }) => {
                 {node.branches.map((bName, bIdx) => {
                   const isCurrent = bName === branch;
                   const labelText = isCurrent ? `HEAD -> ${bName}` : bName;
-                  const pillW = labelText.length * 7 + 20;
-                  const pillY = y - 28 - (bIdx * 20);
+                  const pillW = labelText.length * 6.5 + 24;
+                  const pillHeight = 18;
+                  const pillMargin = 8;
+                  const pillY = y - 32 - (bIdx * (pillHeight + pillMargin));
                   return (
                     <g key={`pill-${bName}`} transform={`translate(${x - pillW / 2}, ${pillY})`}>
-                      <rect width={pillW} height={16} rx={4} fill={isCurrent ? '#ffff66' : '#4d3a35'} stroke={isCurrent ? '#ffff66' : '#7c625a'} strokeWidth={1} />
-                      <text x={pillW / 2} y={11} textAnchor="middle" fill={isCurrent ? '#231916' : '#f5ecea'} className={styles.tagText} fontWeight="bold">
+                      <rect width={pillW} height={pillHeight} rx={4} fill={isCurrent ? '#ffff66' : '#4d3a35'} stroke={isCurrent ? '#ffff66' : '#7c625a'} strokeWidth={1} />
+                      <text x={pillW / 2} y={13} textAnchor="middle" fill={isCurrent ? '#231916' : '#f5ecea'} className={styles.tagText} fontWeight="bold">
                         {labelText}
                       </text>
                     </g>
@@ -204,12 +207,17 @@ const GitGraph: React.FC<GitGraphProps> = ({ data, isInitialized }) => {
                 })}
 
                 {/* Detached HEAD label */}
-                {isHead && !branch && (
-                  <g transform={`translate(${x - 25}, ${y - 28 - (node.branches.length * 20)})`}>
-                    <rect width={50} height={16} rx={4} fill="#ffff66" />
-                    <text x={25} y={11} textAnchor="middle" fill="#231916" className={styles.tagText} fontWeight="bold">HEAD</text>
-                  </g>
-                )}
+                {isHead && branch === 'detached' && (() => {
+                  const pillHeight = 18;
+                  const pillMargin = 8;
+                  const detachedY = y - 32 - (node.branches.length * (pillHeight + pillMargin));
+                  return (
+                    <g transform={`translate(${x - 25}, ${detachedY})`}>
+                      <rect width={50} height={pillHeight} rx={4} fill="#ffff66" />
+                      <text x={25} y={13} textAnchor="middle" fill="#231916" className={styles.tagText} fontWeight="bold">HEAD</text>
+                    </g>
+                  );
+                })()}
               </g>
             );
           })}
