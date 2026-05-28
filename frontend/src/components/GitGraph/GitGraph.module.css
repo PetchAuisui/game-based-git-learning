@@ -1,39 +1,103 @@
 /* src/components/GitGraph/GitGraph.module.css */
 .container {
-  height: 90px;
-  background: rgba(5, 8, 16, 0.95);
+  height: 100%;
+  background: #231916;
   position: relative;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
 }
 
-/* Subtle grid lines background */
+/* Grid lines blueprint look */
 .container::before {
   content: '';
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(34,211,238,0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(34,211,238,0.04) 1px, transparent 1px);
-  background-size: 24px 24px;
+    linear-gradient(rgba(77, 58, 53, 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(77, 58, 53, 0.12) 1px, transparent 1px);
+  background-size: 22px 22px;
   pointer-events: none;
+  z-index: 0;
 }
 
 .label {
   position: absolute;
-  top: 8px;
+  top: 10px;
   left: 14px;
   font-family: 'Fira Code', monospace;
   font-size: 9px;
-  color: var(--gray);
-  letter-spacing: 0.12em;
+  color: #a58e87;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
-  opacity: 0.6;
   z-index: 2;
+  font-weight: 700;
 }
 
-.canvas {
-  width: 100%;
-  height: 100%;
+.graphBody {
+  flex: 1;
+  overflow-y: auto;
   position: relative;
   z-index: 1;
+  padding: 38px 6px 10px 6px;
+}
+
+.svg {
+  display: block;
+}
+
+/* Text inside SVG */
+.hashText {
+  font-family: 'Fira Code', monospace;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.msgText {
+  font-family: 'Fira Code', monospace;
+  font-size: 12px;
+}
+
+.tagText {
+  font-family: 'Fira Code', monospace;
+  font-size: 9px;
+}
+
+/* Empty state */
+.emptyMsg {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: calc(100% - 32px);
+  padding: 20px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.emptyTitle {
+  font-family: 'Fira Code', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #ffff66;
+  margin-bottom: 12px;
+  text-shadow: 0 0 10px rgba(255, 255, 102, 0.3);
+}
+
+.emptyDesc {
+  font-family: 'Fira Code', monospace;
+  font-size: 11px;
+  color: #705c56;
+  line-height: 1.6;
+}
+
+.code {
+  background: #1b1311;
+  border: 1px solid #4d3a35;
+  padding: 1px 6px;
+  border-radius: 4px;
+  color: #a3be8c;
+  font-family: 'Fira Code', monospace;
 }

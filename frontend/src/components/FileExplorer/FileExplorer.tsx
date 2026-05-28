@@ -1,40 +1,59 @@
 // src/components/FileExplorer/FileExplorer.tsx
 import React from 'react';
+import { FileState } from '@/hooks/useGameState';
 import styles from './FileExplorer.module.css';
 
-interface FileItem {
-  id: string;
-  name: string;
-  status: 'untracked' | 'staged' | 'committed' | 'deleted';
-}
-
 interface FileExplorerProps {
-  files: FileItem[];
+  files: FileState[];
 }
 
-const statusLabel: Record<string, string> = {
-  untracked: 'New',
+const STATUS_ICON: Record<string, string> = {
+  untracked: '📄',
+  staged:    '📋',
+  committed: '✅',
+  modified:  '✏️',
+  deleted:   '🗑️',
+};
+
+const STATUS_LABEL: Record<string, string> = {
+  untracked: 'Untracked',
   staged:    'Staged',
-  committed: 'Saved',
+  committed: 'Committed',
+  modified:  'Modified',
+  deleted:   'Deleted',
 };
 
 const FileExplorer: React.FC<FileExplorerProps> = ({ files }) => {
   return (
     <div className={styles.container}>
-      <div className={styles.breadcrumb}>~/project</div>
+      <div className={styles.header}>
+        <span className={styles.headerIcon}>📁</span>
+        <span className={styles.headerTitle}>FILES</span>
+        <span className={styles.headerCount}>{files.length}</span>
+      </div>
+
+      <div className={styles.path}>~/project</div>
+
       <div className={styles.fileList}>
-        {files.map(file => (
-          <div key={file.id} className={`${styles.fileItem} ${styles[file.status]}`}>
-            <div className={styles.icon}>📄</div>
-            <div className={styles.name}>{file.name}</div>
-            <div className={styles.statusLabel}>
-              {statusLabel[file.status] ?? file.status}
+        {files.length === 0 && (
+          <div className={styles.empty}>
+            <div className={styles.emptyIcon}>🗂️</div>
+            <div className={styles.emptyText}>No files yet</div>
+            <div className={styles.emptyHint}>try: touch file.txt</div>
+          </div>
+        )}
+
+        {files.map((file) => (
+          <div key={file.name} className={`${styles.fileItem} ${styles[file.status] || ''}`}>
+            <div className={styles.fileIcon}>{STATUS_ICON[file.status] || '📄'}</div>
+            <div className={styles.fileInfo}>
+              <div className={styles.fileName}>{file.name}</div>
+              <div className={`${styles.fileStatus} ${styles[`status_${file.status}`] || ''}`}>
+                {STATUS_LABEL[file.status] || file.status}
+              </div>
             </div>
           </div>
         ))}
-        {files.length === 0 && (
-          <div className={styles.empty}>Directory is empty</div>
-        )}
       </div>
     </div>
   );
