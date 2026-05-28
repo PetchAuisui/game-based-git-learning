@@ -92,17 +92,21 @@ const GitGraph: React.FC<GitGraphProps> = ({ data, isInitialized }) => {
     }
   }
 
+  const maxLane = Math.max(0, ...Object.values(commitLanes));
+
   // ── SVG layout ──
-  const commitSpacingY = 80;
-  const paddingY = 60;
-  const svgHeight = Math.max(300, nodes.length * commitSpacingY + paddingY * 2);
-  const svgWidth = 600;
+  const commitSpacingX = 100;
+  const paddingX = 60;
+  const svgWidth = Math.max(100, nodes.length * commitSpacingX + paddingX * 2);
+  const laneHeight = 45;
+  const svgHeight = 45 + (maxLane * laneHeight) + 60; // 45 for top tags, 60 for bottom text
 
   const coordsMap: Record<string, { x: number; y: number }> = {};
   nodes.forEach((node, idx) => {
     const lane = commitLanes[node.id] ?? 0;
-    const x = 60 + lane * 50;
-    const y = svgHeight - (paddingY + idx * commitSpacingY);
+    const y = 45 + lane * laneHeight;
+    // nodes is newest-first, so idx 0 is newest. We put newest on the right.
+    const x = svgWidth - (paddingX + idx * commitSpacingX);
     coordsMap[node.id] = { x, y };
   });
 
@@ -126,17 +130,13 @@ const GitGraph: React.FC<GitGraphProps> = ({ data, isInitialized }) => {
     <div className={styles.container}>
       <div className={styles.label}>GIT GRAPH</div>
       <div className={styles.graphBody}>
-        <svg width="100%" height={svgHeight} viewBox={`0 0 ${svgWidth} ${svgHeight}`} className={styles.svg}>
+        <svg width={svgWidth} height={svgHeight} viewBox={`0 0 ${svgWidth} ${svgHeight}`} className={styles.svg}>
           <defs>
-            <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="3" result="blur" />
-              <feComposite in="SourceGraphic" in2="blur" operator="over" />
-            </filter>
             <style>{`
               @keyframes pulseHead {
-                0%   { r: 7;  opacity: 1;   }
-                50%  { r: 13; opacity: 0.35; }
-                100% { r: 7;  opacity: 1;   }
+                0%   { r: 5;  opacity: 1;   }
+                50%  { r: 10; opacity: 0.35; }
+                100% { r: 5;  opacity: 1;   }
               }
               .pulse-circle { animation: pulseHead 2s infinite ease-in-out; }
             `}</style>
@@ -145,12 +145,12 @@ const GitGraph: React.FC<GitGraphProps> = ({ data, isInitialized }) => {
           {/* Edges */}
           {edges.map((edge, i) => {
             const { from, to, color } = edge;
-            const mid = (from.y + to.y) / 2;
-            const d = `M ${from.x} ${from.y} C ${from.x} ${mid}, ${to.x} ${mid}, ${to.x} ${to.y}`;
+            const midX = (from.x + to.x) / 2;
+            const d = `M ${from.x} ${from.y} C ${midX} ${from.y}, ${midX} ${to.y}, ${to.x} ${to.y}`;
             return (
               <g key={`edge-${i}`}>
-                <path d={d} fill="none" stroke="#1c1311" strokeWidth={6} />
-                <path d={d} fill="none" stroke={color} strokeWidth={2.5} filter="url(#glow)" />
+                <path d={d} fill="none" stroke="#1b1311" strokeWidth={6} />
+                <path d={d} fill="none" stroke={color} strokeWidth={3} />
               </g>
             );
           })}
@@ -164,40 +164,36 @@ const GitGraph: React.FC<GitGraphProps> = ({ data, isInitialized }) => {
             const color = getLaneColor(lane);
             const isHead = node.isHead;
 
-            // Compute branch pill x positions
-            let pillX = x + 120;
-
             return (
               <g key={node.id}>
                 {/* HEAD pulse ring */}
                 {isHead && (
-                  <circle cx={x} cy={y} r={10} fill="none" stroke="#ffff66" strokeWidth={2} className="pulse-circle" />
+                  <circle cx={x} cy={y} r={8} fill="none" stroke="#ffff66" strokeWidth={1.5} className="pulse-circle" />
                 )}
 
                 {/* Outer ring */}
-                <circle cx={x} cy={y} r={8} fill="#231916" stroke={isHead ? '#ffff66' : color} strokeWidth={2.5} />
+                <circle cx={x} cy={y} r={6} fill="#231916" stroke={isHead ? '#ffff66' : color} strokeWidth={2} />
 
                 {/* Inner dot */}
-                <circle cx={x} cy={y} r={4} fill={isHead ? '#ffff66' : color} />
+                <circle cx={x} cy={y} r={3} fill={isHead ? '#ffff66' : color} />
 
                 {/* Hash */}
-                <text x={x + 16} y={y + 4} fill="#ffff66" className={styles.hashText}>
+                <text x={x} y={y + 24} fill="#ffff66" textAnchor="middle" className={styles.hashText}>
                   {node.id}
                 </text>
 
                 {/* Message */}
-                <text x={x + 75} y={y + 4} fill="#f5ecea" className={styles.msgText}>
-                  {node.label.length > 26 ? node.label.substring(0, 26) + '…' : node.label}
+                <text x={x} y={y + 38} fill="#f5ecea" textAnchor="middle" className={styles.msgText}>
+                  {node.label.length > 18 ? node.label.substring(0, 15) + '…' : node.label}
                 </text>
 
                 {/* Branch pills */}
-                {node.branches.map((bName) => {
+                {node.branches.map((bName, bIdx) => {
                   const isCurrent = bName === branch;
                   const pillW = bName.length * 7 + 16;
-                  const currentPillX = pillX;
-                  pillX += pillW + 8;
+                  const pillY = y - 28 - (bIdx * 20);
                   return (
-                    <g key={`pill-${bName}`} transform={`translate(${currentPillX}, ${y - 8})`}>
+                    <g key={`pill-${bName}`} transform={`translate(${x - pillW / 2}, ${pillY})`}>
                       <rect width={pillW} height={16} rx={4} fill={isCurrent ? '#a3be8c' : '#4d3a35'} stroke={isCurrent ? '#ffff66' : '#7c625a'} strokeWidth={1} />
                       <text x={pillW / 2} y={11} textAnchor="middle" fill={isCurrent ? '#231916' : '#f5ecea'} className={styles.tagText} fontWeight="bold">
                         {bName}
@@ -208,7 +204,7 @@ const GitGraph: React.FC<GitGraphProps> = ({ data, isInitialized }) => {
 
                 {/* Detached HEAD label */}
                 {isHead && !branch && (
-                  <g transform={`translate(${pillX}, ${y - 8})`}>
+                  <g transform={`translate(${x - 25}, ${y - 28 - (node.branches.length * 20)})`}>
                     <rect width={50} height={16} rx={4} fill="#ffff66" />
                     <text x={25} y={11} textAnchor="middle" fill="#231916" className={styles.tagText} fontWeight="bold">HEAD</text>
                   </g>

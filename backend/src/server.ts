@@ -120,6 +120,30 @@ app.post('/api/file', (req: Request, res: Response) => {
   }
 });
 
+/**
+ * Delete a file
+ * DELETE /api/file
+ * Query: { path: string }
+ */
+app.delete('/api/file', (req: Request, res: Response) => {
+  try {
+    const { path } = req.query;
+    
+    if (!path || typeof path !== 'string') {
+      return res.status(400).json({ error: 'Path is required' });
+    }
+
+    gitEngine.deleteFile(path);
+    const files = gitEngine.getFiles();
+    
+    res.json({ success: true, files });
+  } catch (error) {
+    res.status(500).json({ 
+      error: error instanceof Error ? error.message : 'Unknown error' 
+    });
+  }
+});
+
 // Error handling middleware
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error(err);

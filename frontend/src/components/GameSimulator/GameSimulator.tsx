@@ -27,6 +27,8 @@ const GameSimulator: React.FC<GameSimulatorProps> = ({ onReturnMenu }) => {
     error,
     executeCommand,
     resetSandbox,
+    createOrUpdateFile,
+    deleteFile,
   } = useGameState();
 
   // Resizable splitter between graph and terminal
@@ -123,7 +125,12 @@ const GameSimulator: React.FC<GameSimulatorProps> = ({ onReturnMenu }) => {
       <div className={styles.mainContent}>
         {/* Left Sidebar: File Explorer */}
         <div className={styles.leftCol}>
-          <FileExplorer files={files} />
+          <FileExplorer 
+            files={files} 
+            onCreateFile={createOrUpdateFile}
+            onUpdateFile={createOrUpdateFile}
+            onDeleteFile={deleteFile}
+          />
         </div>
 
         {/* Right Main Area: Git Graph (top) + Terminal (bottom) */}

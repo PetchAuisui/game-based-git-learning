@@ -1,5 +1,6 @@
 import git from 'isomorphic-git';
-import { promises as fs } from 'fs';
+import { promises as fs, existsSync, readFileSync, mkdirSync, writeFileSync } from 'fs';
+import * as path from 'path';
 import { vol } from 'memfs';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -39,12 +40,57 @@ export class GitEngine {
   private branches: Map<string, string> = new Map();
   private HEAD = 'detached';
   private commitCounter = 0;
+  private stateFilePath = path.join(process.cwd(), 'data', 'sandbox-state.json');
 
   constructor() {
     this.initialize();
   }
 
+  private loadState(): boolean {
+    try {
+      if (existsSync(this.stateFilePath)) {
+        const stateStr = readFileSync(this.stateFilePath, 'utf8');
+        const state = JSON.parse(stateStr);
+        this.memfs.fromJSON(state.fs);
+        
+        this.commits = new Map(state.commits);
+        this.branches = new Map(state.branches);
+        this.currentBranch = state.currentBranch;
+        this.commitCounter = state.commitCounter;
+        return true;
+      }
+    } catch (e) {
+      console.error('Failed to load state:', e);
+    }
+    return false;
+  }
+
+  private saveState(): void {
+    try {
+      const state = {
+        fs: this.memfs.toJSON(),
+        commits: Array.from(this.commits.entries()),
+        branches: Array.from(this.branches.entries()),
+        currentBranch: this.currentBranch,
+        commitCounter: this.commitCounter
+      };
+      
+      const dir = path.dirname(this.stateFilePath);
+      if (!existsSync(dir)) {
+        mkdirSync(dir, { recursive: true });
+      }
+      
+      writeFileSync(this.stateFilePath, JSON.stringify(state));
+    } catch (e) {
+      console.error('Failed to save state:', e);
+    }
+  }
+
   private async initialize() {
+    if (this.loadState()) {
+      return;
+    }
+
     // Set up memfs with initial structure
     this.memfs.reset();
     
@@ -67,19 +113,26 @@ export class GitEngine {
     const cmd = parts[0];
 
     try {
+      let result: CommandResult;
       if (cmd === 'git') {
-        return await this.handleGitCommand(parts.slice(1));
+        result = await this.handleGitCommand(parts.slice(1));
       } else if (cmd === 'echo' || cmd === 'touch' || cmd === 'mkdir') {
-        return await this.handleFileCommand(parts);
+        result = await this.handleFileCommand(parts);
       } else if (cmd === 'ls' || cmd === 'pwd') {
-        return await this.handleShellCommand(parts);
+        result = await this.handleShellCommand(parts);
       } else {
-        return {
+        result = {
           success: false,
           output: '',
           error: `Unknown command: ${cmd}`,
         };
       }
+      
+      if (result.success && cmd !== 'ls' && cmd !== 'pwd' && cmd !== 'git log' && cmd !== 'git status' && cmd !== 'git show' && cmd !== 'git branch' && cmd !== 'git version') {
+         // Some commands don't mutate state, but it's safe to just save if it's a success
+         this.saveState();
+      }
+      return result;
     } catch (error) {
       return {
         success: false,
@@ -109,6 +162,13 @@ export class GitEngine {
         return await this.gitCheckout(args.slice(1));
       case 'show':
         return await this.gitShow(args.slice(1));
+      case 'version':
+        return {
+          success: true,
+          output: 'git version 2.39.2 (Sandbox Engine)',
+          gitGraph: this.getGitGraph(),
+          files: this.getFiles(),
+        };
       default:
         return {
           success: false,
@@ -205,18 +265,24 @@ export class GitEngine {
         },
       });
 
-      const commitId = uuidv4().substring(0, 8);
+      const commitId = sha.substring(0, 8);
+      const currentPointer = this.branches.get(this.currentBranch);
+      const parentId = currentPointer === 'HEAD~0' ? null : (currentPointer || null);
+      
       this.commits.set(commitId, {
         id: commitId,
         message: message,
-        hash: sha.substring(0, 8),
-        parent: null,
+        hash: commitId,
+        parent: parentId,
         timestamp: Date.now(),
       });
 
+      // Update the branch to point to the new commit
+      this.branches.set(this.currentBranch, commitId);
+
       return {
         success: true,
-        output: `[${this.currentBranch} ${sha.substring(0, 7)}] ${message}`,
+        output: `[${this.currentBranch} ${commitId.substring(0, 7)}] ${message}`,
         gitGraph: this.getGitGraph(),
         files: this.getFiles(),
       };
@@ -273,11 +339,28 @@ export class GitEngine {
       let staged: string[] = [];
 
       status.forEach(([filepath, headStatus, workdirStatus, stageStatus]) => {
-        if (headStatus === 0 && workdirStatus === 2) {
+        // [0, 2, 0] untracked
+        if (headStatus === 0 && workdirStatus === 2 && stageStatus === 0) {
           untracked.push(filepath);
-        } else if (workdirStatus === 2) {
+        } 
+        // [0, 2, 2] added and staged
+        else if (headStatus === 0 && stageStatus === 2) {
+          staged.push(filepath);
+        }
+        // [1, 2, 1] modified but unstaged
+        else if (headStatus === 1 && workdirStatus === 2 && stageStatus === 1) {
           modified.push(filepath);
-        } else if (stageStatus === 2) {
+        }
+        // [1, 2, 2] modified and staged
+        else if (headStatus === 1 && stageStatus === 2) {
+          staged.push(filepath);
+        }
+        // [1, 0, 1] deleted but unstaged
+        else if (headStatus === 1 && workdirStatus === 0 && stageStatus === 1) {
+          modified.push(filepath);
+        }
+        // [1, 0, 0] deleted and staged
+        else if (headStatus === 1 && workdirStatus === 0 && stageStatus === 0) {
           staged.push(filepath);
         }
       });
@@ -332,7 +415,8 @@ export class GitEngine {
       } else {
         // Create new branch
         const newBranch = args[0];
-        this.branches.set(newBranch, 'HEAD~0');
+        const currentPointer = this.branches.get(this.currentBranch) || 'HEAD~0';
+        this.branches.set(newBranch, currentPointer);
         return {
           success: true,
           output: `Created branch '${newBranch}'`,
@@ -363,7 +447,8 @@ export class GitEngine {
 
       if (args.includes('-b')) {
         // Create and checkout new branch
-        this.branches.set(target, 'HEAD~0');
+        const currentPointer = this.branches.get(this.currentBranch) || 'HEAD~0';
+        this.branches.set(target, currentPointer);
         this.currentBranch = target;
       } else if (this.branches.has(target)) {
         this.currentBranch = target;
@@ -569,6 +654,19 @@ export class GitEngine {
     }
 
     this.memfs.writeFileSync(normalizedPath, content);
+    this.saveState();
+  }
+
+  deleteFile(path: string): void {
+    try {
+      const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+      if (this.memfs.existsSync(normalizedPath)) {
+        this.memfs.unlinkSync(normalizedPath);
+        this.saveState();
+      }
+    } catch (error) {
+      console.error(`Error deleting file ${path}:`, error);
+    }
   }
 
   private getGitGraph(): GitGraph {
@@ -599,7 +697,17 @@ export class GitEngine {
     this.commits.clear();
     this.branches.clear();
     this.currentBranch = 'main';
+    this.HEAD = 'detached';
     this.commitCounter = 0;
+    
+    try {
+      if (existsSync(this.stateFilePath)) {
+        require('fs').unlinkSync(this.stateFilePath);
+      }
+    } catch(e) {
+      console.error('Error deleting state file:', e);
+    }
+    
     this.initialize();
   }
 }

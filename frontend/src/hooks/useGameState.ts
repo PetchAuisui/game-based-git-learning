@@ -183,6 +183,32 @@ export function useGameState() {
     }
   }, [applyStateUpdate]);
 
+  const createOrUpdateFile = useCallback(async (path: string, content: string = '') => {
+    try {
+      const res = await api.post('/file', { path, content });
+      if (res.data && res.data.files) {
+        setFiles(transformFiles(res.data.files));
+      }
+      return true;
+    } catch (e) {
+      console.error('Failed to create/update file', e);
+      return false;
+    }
+  }, []);
+
+  const deleteFile = useCallback(async (path: string) => {
+    try {
+      const res = await api.delete(`/file?path=${encodeURIComponent(path)}`);
+      if (res.data && res.data.files) {
+        setFiles(transformFiles(res.data.files));
+      }
+      return true;
+    } catch (e) {
+      console.error('Failed to delete file', e);
+      return false;
+    }
+  }, []);
+
   return {
     files,
     gitGraph,
@@ -195,5 +221,7 @@ export function useGameState() {
     executeCommand,
     resetSandbox,
     fetchState,
+    createOrUpdateFile,
+    deleteFile,
   };
 }

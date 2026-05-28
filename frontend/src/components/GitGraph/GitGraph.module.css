@@ -36,14 +36,18 @@
 
 .graphBody {
   flex: 1;
-  overflow-y: auto;
+  overflow-x: auto;
+  overflow-y: hidden;
   position: relative;
   z-index: 1;
-  padding: 38px 6px 10px 6px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
 }
 
 .svg {
   display: block;
+  min-width: 100%;
 }
 
 /* Text inside SVG */
