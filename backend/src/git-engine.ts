@@ -160,6 +160,8 @@ export class GitEngine {
         return await this.gitBranch(args.slice(1));
       case 'checkout':
         return await this.gitCheckout(args.slice(1));
+      case 'merge':
+        return await this.gitMerge(args.slice(1));
       case 'show':
         return await this.gitShow(args.slice(1));
       case 'version':
@@ -416,6 +418,16 @@ export class GitEngine {
         // Create new branch
         const newBranch = args[0];
         const currentPointer = this.branches.get(this.currentBranch) || 'HEAD~0';
+        
+        // Actually branch in isomorphic-git
+        if (currentPointer && currentPointer !== 'HEAD~0') {
+          await git.branch({
+            fs: this.memfs as any,
+            dir: '/',
+            ref: newBranch
+          });
+        }
+        
         this.branches.set(newBranch, currentPointer);
         return {
           success: true,
@@ -435,7 +447,8 @@ export class GitEngine {
 
   private async gitCheckout(args: string[]): Promise<CommandResult> {
     try {
-      const target = args[0];
+      const isNewBranch = args.includes('-b');
+      const target = isNewBranch ? args[args.indexOf('-b') + 1] : args[0];
 
       if (!target) {
         return {
@@ -445,9 +458,18 @@ export class GitEngine {
         };
       }
 
-      if (args.includes('-b')) {
+      if (isNewBranch) {
         // Create and checkout new branch
         const currentPointer = this.branches.get(this.currentBranch) || 'HEAD~0';
+        
+        if (currentPointer !== 'HEAD~0') {
+          await git.branch({
+            fs: this.memfs as any,
+            dir: '/',
+            ref: target
+          });
+        }
+        
         this.branches.set(target, currentPointer);
         this.currentBranch = target;
       } else if (this.branches.has(target)) {
@@ -458,6 +480,21 @@ export class GitEngine {
           output: '',
           error: `Branch '${target}' not found`,
         };
+      }
+      
+      // Update the file tree to match the checked out branch
+      const commitHash = this.branches.get(this.currentBranch);
+      if (commitHash && commitHash !== 'HEAD~0') {
+        try {
+          await git.checkout({
+            fs: this.memfs as any,
+            dir: '/',
+            ref: target,
+            force: true // Automatically overwrite unsaved files for sandbox simplicity
+          });
+        } catch (e) {
+          console.error("Checkout file sync error:", e);
+        }
       }
 
       return {
@@ -471,6 +508,75 @@ export class GitEngine {
         success: false,
         output: '',
         error: error instanceof Error ? error.message : 'Failed to checkout',
+      };
+    }
+  }
+
+  private async gitMerge(args: string[]): Promise<CommandResult> {
+    try {
+      const theirs = args[0];
+      if (!theirs) {
+        return { success: false, output: '', error: 'merge requires a branch name' };
+      }
+      if (!this.branches.has(theirs)) {
+        return { success: false, output: '', error: `Branch '${theirs}' not found` };
+      }
+
+      const result = await git.merge({
+        fs: this.memfs as any,
+        dir: '/',
+        ours: this.currentBranch,
+        theirs: theirs,
+        abortOnConflict: true,
+        author: {
+          name: 'Sandbox User',
+          email: 'user@sandbox.local',
+        }
+      });
+
+      if (result.alreadyMerged) {
+        return {
+          success: true,
+          output: 'Already up to date.',
+          gitGraph: this.getGitGraph(),
+          files: this.getFiles()
+        };
+      }
+
+      const mergeOid = result.oid;
+      
+      if (mergeOid) {
+        // Record the merge commit in our custom tracker
+        const theirPointer = this.branches.get(theirs);
+        const ourPointer = this.branches.get(this.currentBranch);
+        
+        if (result.mergeCommit) {
+          this.commits.set(mergeOid.substring(0, 8), {
+            id: mergeOid.substring(0, 8),
+            message: `Merge branch '${theirs}' into ${this.currentBranch}`,
+            hash: mergeOid.substring(0, 8),
+            parent: ourPointer || null,
+            timestamp: Date.now()
+          });
+          
+          // Note: we can't cleanly draw 2 parents in the custom GitGraph yet, 
+          // but we record the commit so it shows on the graph.
+        }
+        
+        this.branches.set(this.currentBranch, mergeOid.substring(0, 8));
+      }
+
+      return {
+        success: true,
+        output: result.fastForward ? 'Fast-forward merge successful.' : 'Merge commit created successfully.',
+        gitGraph: this.getGitGraph(),
+        files: this.getFiles()
+      };
+    } catch (error) {
+      return {
+        success: false,
+        output: '',
+        error: error instanceof Error ? error.message : 'Merge conflict or error occurred.',
       };
     }
   }
