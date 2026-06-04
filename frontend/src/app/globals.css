@@ -10,12 +10,28 @@
 }
 
 :root {
-  /* Background layers */
-  --bg:            #231916;
-  --bg2:           #2e211d;
-  --bg3:           #1b1311;
+  /* Default variables (matching original dark brown theme) */
+  --bg-page:       #231916;
+  --bg-header:     #1b1311;
+  --text-header:   #ffff66;
+  --border-card:   #4d3a35;
+  
+  --bg-card-tasks: #2e211d;
+  --text-card-tasks: #f5ecea;
+  
+  --bg-card-files: #2e211d;
+  --text-card-files: #f5ecea;
+  
+  --bg-workspace:  #231916;
+  --text-workspace: #f5ecea;
+  
+  --bg-term-header: #1b1311;
+  --text-term-header: #a58e87;
+  --border-term:    #4d3a35;
+  --bg-terminal:    #1c1311;
+  --text-terminal:  #a3be8c;
 
-  /* Borders */
+  /* Common borders */
   --border-dim:    #4d3a35;
   --border-bright: #7c625a;
 
@@ -32,16 +48,125 @@
   --muted:         #a58e87;
   --dim:           #705c56;
 
-  /* Terminal */
-  --terminal-bg:   #1c1311;
-  --terminal-fg:   #a3be8c;
+  /* Tasks completed */
+  --tasks-completed-fg: #a3be8c;
+
+  /* Files Card Specifics */
+  --files-muted:         #a58e87;
+  --files-dim:           #705c56;
+  --files-untracked-fg:  #ec7063;
+  --files-untracked-bg:  rgba(236, 112, 99, 0.1);
+  --files-staged-fg:     #a3be8c;
+  --files-staged-bg:     rgba(163, 190, 140, 0.1);
+  --files-committed-fg:  #ffff66;
+  --files-committed-bg:  rgba(255, 255, 102, 0.08);
+  --files-modified-fg:   #e59866;
+  --files-modified-bg:   rgba(229, 152, 102, 0.1);
+  --files-deleted-fg:    #a58e87;
+  --files-deleted-bg:    rgba(165, 142, 135, 0.1);
+}
+
+[data-theme="light"] {
+  --bg-page:       #f6deb7;
+  --bg-header:     #be7a5d;
+  --text-header:   #ffffff;
+  --border-card:   #46352c;
+  
+  --bg-card-tasks: #f5ede1;
+  --text-card-tasks: #46352c;
+  
+  --bg-card-files: #c48662;
+  --text-card-files: #ffffff;
+  
+  --bg-workspace:  #d2c5b1;
+  --text-workspace: #46352c;
+  
+  --bg-term-header: #fee898;
+  --text-term-header: #000000;
+  --border-term:    #fee898;
+  --bg-terminal:    #000000;
+  --text-terminal:  #a3be8c;
+
+  /* Borders & selection */
+  --border-dim:    #46352c;
+  --border-bright: #be7a5d;
+
+  /* Text overrides */
+  --text:          #46352c;
+  --muted:         #8a7065;
+  --dim:           #a08d87;
+
+  /* Tasks completed */
+  --tasks-completed-fg: #2b5016;
+
+  /* Files Card Specifics */
+  --files-muted:         #f5e6dc;
+  --files-dim:           #e6cfc0;
+  --files-untracked-fg:  #ffffff;
+  --files-untracked-bg:  rgba(255, 255, 255, 0.15);
+  --files-staged-fg:     #ffffff;
+  --files-staged-bg:     rgba(255, 255, 255, 0.2);
+  --files-committed-fg:  #ffffff;
+  --files-committed-bg:  rgba(255, 255, 255, 0.15);
+  --files-modified-fg:   #ffffff;
+  --files-modified-bg:   rgba(255, 255, 255, 0.15);
+  --files-deleted-fg:    #e0e0e0;
+  --files-deleted-bg:    rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] {
+  --bg-page:       #526882;
+  --bg-header:     #455a73;
+  --text-header:   #ffffff;
+  --border-card:   #303e4d;
+  
+  --bg-card-tasks: #c0c7cf;
+  --text-card-tasks: #354252;
+  
+  --bg-card-files: #c0c7cf;
+  --text-card-files: #354252;
+  
+  --bg-workspace:  #3a485a;
+  --text-workspace: #ffffff;
+  
+  --bg-term-header: #b97759;
+  --text-term-header: #000000;
+  --border-term:    #b97759;
+  --bg-terminal:    #000000;
+  --text-terminal:  #a3be8c;
+
+  /* Borders & selection */
+  --border-dim:    #303e4d;
+  --border-bright: #455a73;
+
+  /* Text overrides */
+  --text:          #354252;
+  --muted:         #5c6e82;
+  --dim:           #7b8c9d;
+
+  /* Tasks completed */
+  --tasks-completed-fg: #1b5e20;
+
+  /* Files Card Specifics */
+  --files-muted:         #5c6e82;
+  --files-dim:           #7b8c9d;
+  --files-untracked-fg:  #b71c1c;
+  --files-untracked-bg:  rgba(198, 40, 40, 0.12);
+  --files-staged-fg:     #1b5e20;
+  --files-staged-bg:     rgba(46, 125, 50, 0.15);
+  --files-committed-fg:  #354252;
+  --files-committed-bg:  rgba(53, 66, 82, 0.12);
+  --files-modified-fg:   #e65100;
+  --files-modified-bg:   rgba(230, 81, 0, 0.12);
+  --files-deleted-fg:    #424242;
+  --files-deleted-bg:    rgba(117, 117, 117, 0.12);
 }
 
 html, body {
   height: 100%;
   width: 100%;
   font-family: 'Fira Code', 'Courier New', monospace;
-  background-color: var(--bg);
+  background-color: var(--bg-page);
   color: var(--text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

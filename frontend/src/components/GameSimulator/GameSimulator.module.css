@@ -5,7 +5,7 @@
   height: 100vh;
   width: 100vw;
   overflow: hidden;
-  background: #231916;
+  background: var(--bg-page);
 }
 
 .mainContent {
@@ -15,17 +15,28 @@
   overflow: hidden;
   gap: 8px;
   padding: 8px;
-  background: #231916;
+  background: var(--bg-page);
 }
 
-/* Left: File Explorer sidebar */
+/* Left: Tasks + Files sidebar */
 .leftCol {
   width: 260px;
   flex-shrink: 0;
-  border-radius: 10px;
-  border: 1px solid #4d3a35;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   overflow: hidden;
-  background: #2e211d;
+}
+
+.tasksCard {
+  flex-shrink: 0;
+}
+
+.filesCard {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Right: Git Graph + Terminal */
@@ -40,31 +51,31 @@
 
 .graphWrapper {
   flex-shrink: 0;
-  border-radius: 10px;
+  border-radius: 8px;
   overflow: hidden;
-  border: 1px solid #4d3a35;
-  background: #231916;
+  border: 2px solid var(--border-card);
+  background: var(--bg-workspace);
 }
 
 .splitter {
   height: 6px;
   cursor: row-resize;
-  background: #4d3a35;
+  background: var(--border-card);
   border-radius: 3px;
   flex-shrink: 0;
   transition: background 0.2s;
 }
 
 .splitter:hover {
-  background: #7c625a;
+  background: var(--border-bright);
 }
 
 .terminalWrapper {
   flex: 1;
   overflow: hidden;
-  border-radius: 10px;
-  border: 1px solid #4d3a35;
-  background: #1c1311;
+  border-radius: 8px;
+  border: 2px solid var(--border-term);
+  background: var(--bg-terminal);
 }
 
 /* Loading overlay */
@@ -75,7 +86,7 @@
   justify-content: center;
   height: 100%;
   gap: 20px;
-  background: #231916;
+  background: var(--bg-page);
 }
 
 .loadingSpinner {

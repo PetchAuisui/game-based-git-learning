@@ -1,0 +1,100 @@
+/* src/components/Tasks/Tasks.module.css */
+.container {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-card-tasks);
+  color: var(--text-card-tasks);
+  font-family: 'Fira Code', monospace;
+  overflow: hidden;
+  border: 2px solid var(--border-card);
+  border-radius: 8px;
+}
+
+/* Header bar */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-bottom: 2px solid var(--border-card);
+  flex-shrink: 0;
+}
+
+.headerIcon {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.headerTitle {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* Task list */
+.taskList {
+  flex: 1;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Task item */
+.taskItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+/* Completed task style */
+.completed {
+  background: rgba(163, 190, 140, 0.15);
+  border-color: rgba(163, 190, 140, 0.4);
+  color: var(--tasks-completed-fg);
+}
+
+:global([data-theme="light"]) .completed {
+  background: rgba(90, 150, 90, 0.12);
+  border-color: rgba(90, 150, 90, 0.3);
+}
+
+:global([data-theme="dark"]) .completed {
+  background: rgba(46, 125, 50, 0.1);
+  border-color: rgba(46, 125, 50, 0.3);
+}
+
+/* Uncompleted task text */
+.taskItem:not(.completed) {
+  color: var(--text-card-tasks);
+  opacity: 0.75;
+}
+
+/* Checkbox */
+.checkbox {
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--border-card);
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: bold;
+  flex-shrink: 0;
+  background: rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.completed .checkbox {
+  border-color: currentColor;
+  background: rgba(163, 190, 140, 0.2);
+  color: currentColor;
+}

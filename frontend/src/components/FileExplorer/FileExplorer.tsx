@@ -64,7 +64,7 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ files, onCreateFile, onUpda
         </div>
         {onCreateFile && (
           <button className={styles.newBtn} onClick={() => setIsCreating(true)} title="New File">
-            ➕
+            +
           </button>
         )}
       </div>

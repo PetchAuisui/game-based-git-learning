@@ -2,99 +2,124 @@
 .hud {
   display: flex;
   align-items: center;
-  gap: 4px;
+  justify-content: space-between;
   height: 52px;
   padding: 0 16px;
-  background: rgba(27, 19, 17, 0.95);
-  border-bottom: 1px solid #4d3a35;
+  background: var(--bg-header);
+  border-bottom: 2px solid var(--border-card);
   flex-shrink: 0;
   position: relative;
-  backdrop-filter: blur(12px);
+  transition: all 0.2s ease;
+  font-family: 'Fira Code', monospace;
 }
 
-.hud::after {
-  content: '';
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent 0%, #ffff66 30%, #a3be8c 70%, transparent 100%);
-  opacity: 0.3;
-}
-
-.brand {
+.brandSection {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-right: 16px;
-}
-
-.brandIcon {
-  font-size: 18px;
-  color: #ffff66;
-  filter: drop-shadow(0 0 6px rgba(255, 255, 102, 0.5));
+  gap: 12px;
 }
 
 .brandName {
-  font-family: 'Fira Code', monospace;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
-  color: #ffff66;
-  letter-spacing: 0.15em;
-  text-shadow: 0 0 10px rgba(255, 255, 102, 0.4);
+  color: var(--text-header);
+  letter-spacing: 0.1em;
 }
 
-.hudSection {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 0 16px;
-  height: 100%;
-  border-left: 1px solid #4d3a35;
+.lvlBadge {
+  font-size: 9px;
+  font-weight: 800;
+  background: #a2be8c;
+  color: #231916;
+  border: 1px solid var(--border-card);
+  border-radius: 4px;
+  padding: 2px 6px;
+  letter-spacing: 0.05em;
 }
-
-.hudLabel {
-  font-family: 'Fira Code', monospace;
-  font-size: 8px;
-  color: #a58e87;
-  margin-bottom: 2px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.hudVal {
-  font-family: 'Fira Code', monospace;
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.gold   { color: #ffff66; }
-.green  { color: #a3be8c; }
-.timer  { color: #f5ecea; letter-spacing: 0.05em; }
 
 .controls {
-  margin-left: auto;
   display: flex;
-  gap: 8px;
+  gap: 16px;
   align-items: center;
 }
 
+/* Score Section */
+.scoreSection {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.coinIcon {
+  font-size: 14px;
+}
+
+.scoreVal {
+  font-size: 11px;
+  font-weight: bold;
+  color: var(--yellow);
+  letter-spacing: 0.05em;
+}
+
+/* Timer Badge */
+.timerBadge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #a82b2b;
+  color: #ffffff;
+  border: 1px solid var(--border-card);
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+}
+
+.clockIcon {
+  font-size: 11px;
+}
+
+/* Theme Button */
+.themeBtn {
+  font-family: 'Fira Code', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border-card);
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-header);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.themeBtn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.themeBtn:active {
+  transform: translateY(0);
+}
+
+/* Reset Button */
 .resetBtn {
   font-family: 'Fira Code', monospace;
   font-size: 11px;
   font-weight: 600;
-  padding: 6px 14px;
+  padding: 5px 12px;
   border-radius: 6px;
-  border: 1px solid rgba(244, 63, 94, 0.4);
-  background: rgba(244, 63, 94, 0.08);
-  color: #ec7063;
+  border: 1px solid var(--border-card);
+  background: #a82b2b; /* Solid warning red */
+  color: #ffffff;      /* High contrast white text */
   cursor: pointer;
   transition: all 0.2s ease;
   letter-spacing: 0.04em;
 }
 
 .resetBtn:hover {
-  background: rgba(244, 63, 94, 0.18);
-  border-color: rgba(244, 63, 94, 0.7);
+  background: #c83b3b;
   transform: translateY(-1px);
 }
 

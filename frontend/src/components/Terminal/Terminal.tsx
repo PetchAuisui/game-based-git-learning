@@ -46,12 +46,9 @@ const Terminal: React.FC<TerminalProps> = ({ onCommand, history }) => {
 
   return (
     <div className={styles.container} onClick={() => inputRef.current?.focus()}>
-      {/* macOS chrome bar */}
+      {/* terminal bar */}
       <div className={styles.termBar}>
-        <span className={`${styles.dot} ${styles.dotRed}`} />
-        <span className={`${styles.dot} ${styles.dotYellow}`} />
-        <span className={`${styles.dot} ${styles.dotGreen}`} />
-        <span className={styles.termTitle}>git-sandbox — bash</span>
+        <span className={styles.termTitle}>Terminal</span>
       </div>
 
       {/* Scrollable body */}
@@ -59,7 +56,7 @@ const Terminal: React.FC<TerminalProps> = ({ onCommand, history }) => {
         <div className={styles.output}>
           <div className={styles.welcome}>
             <span style={{ color: '#ffff66' }}>Git Sandbox</span>{' '}
-            <span style={{ color: '#a58e87' }}>v1.0 — free-play mode</span>
+            <span style={{ color: '#d4c5c0' }}>v1.0 — free-play mode</span>
           </div>
           <div className={styles.welcomeHint}>
             Try: <span style={{ color: '#a3be8c' }}>git init</span> → <span style={{ color: '#a3be8c' }}>touch file.txt</span> → <span style={{ color: '#a3be8c' }}>git add .</span> → <span style={{ color: '#a3be8c' }}>git commit -m "hello"</span>

@@ -1,11 +1,12 @@
 // src/components/GameSimulator/GameSimulator.tsx
 'use client';
 
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import HUD from '@/components/HUD/HUD';
 import Terminal from '@/components/Terminal/Terminal';
 import FileExplorer from '@/components/FileExplorer/FileExplorer';
 import GitGraph from '@/components/GitGraph/GitGraph';
+import Tasks from '@/components/Tasks/Tasks';
 import { useGameState } from '@/hooks/useGameState';
 import styles from './GameSimulator.module.css';
 
@@ -16,6 +17,26 @@ interface GameSimulatorProps {
 const GameSimulator: React.FC<GameSimulatorProps> = ({ onReturnMenu }) => {
   const [history, setHistory] = useState<React.ReactNode[]>([]);
   const [isExecuting, setIsExecuting] = useState(false);
+  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('game-theme') as 'light' | 'dark';
+    if (savedTheme === 'light' || savedTheme === 'dark') {
+      setTheme(savedTheme);
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    } else {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  }, []);
+
+  const toggleTheme = useCallback(() => {
+    setTheme(prev => {
+      const next = prev === 'light' ? 'dark' : 'light';
+      localStorage.setItem('game-theme', next);
+      document.documentElement.setAttribute('data-theme', next);
+      return next;
+    });
+  }, []);
 
   const {
     files,
@@ -120,17 +141,28 @@ const GameSimulator: React.FC<GameSimulatorProps> = ({ onReturnMenu }) => {
         score={score}
         timerStart={timerStart}
         onReset={handleReset}
+        theme={theme}
+        onToggleTheme={toggleTheme}
       />
 
       <div className={styles.mainContent}>
-        {/* Left Sidebar: File Explorer */}
+        {/* Left Sidebar: Tasks + File Explorer */}
         <div className={styles.leftCol}>
-          <FileExplorer 
-            files={files} 
-            onCreateFile={createOrUpdateFile}
-            onUpdateFile={createOrUpdateFile}
-            onDeleteFile={deleteFile}
-          />
+          <div className={styles.tasksCard}>
+            <Tasks
+              isInitialized={isInitialized}
+              hasFiles={files.length > 0}
+              score={score}
+            />
+          </div>
+          <div className={styles.filesCard}>
+            <FileExplorer 
+              files={files} 
+              onCreateFile={createOrUpdateFile}
+              onUpdateFile={createOrUpdateFile}
+              onDeleteFile={deleteFile}
+            />
+          </div>
         </div>
 
         {/* Right Main Area: Git Graph (top) + Terminal (bottom) */}

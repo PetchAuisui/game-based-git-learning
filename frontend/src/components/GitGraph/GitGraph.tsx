@@ -149,7 +149,7 @@ const GitGraph: React.FC<GitGraphProps> = ({ data, isInitialized }) => {
             const d = `M ${from.x} ${from.y} C ${midX} ${from.y}, ${midX} ${to.y}, ${to.x} ${to.y}`;
             return (
               <g key={`edge-${i}`}>
-                <path d={d} fill="none" stroke="#1b1311" strokeWidth={6} />
+                <path d={d} fill="none" stroke="var(--bg-workspace)" strokeWidth={6} />
                 <path d={d} fill="none" stroke={color} strokeWidth={3} />
               </g>
             );
@@ -168,22 +168,22 @@ const GitGraph: React.FC<GitGraphProps> = ({ data, isInitialized }) => {
               <g key={node.id}>
                 {/* HEAD pulse ring */}
                 {isHead && (
-                  <circle cx={x} cy={y} r={8} fill="none" stroke="#ffff66" strokeWidth={1.5} className="pulse-circle" />
+                  <circle cx={x} cy={y} r={8} fill="none" stroke="var(--yellow)" strokeWidth={1.5} className="pulse-circle" />
                 )}
 
                 {/* Outer ring */}
-                <circle cx={x} cy={y} r={6} fill="#231916" stroke={isHead ? '#ffff66' : color} strokeWidth={2} />
+                <circle cx={x} cy={y} r={6} fill="var(--bg-workspace)" stroke={isHead ? 'var(--yellow)' : color} strokeWidth={2} />
 
                 {/* Inner dot */}
-                <circle cx={x} cy={y} r={3} fill={isHead ? '#ffff66' : color} />
+                <circle cx={x} cy={y} r={3} fill={isHead ? 'var(--yellow)' : color} />
 
                 {/* Hash */}
-                <text x={x} y={y + 24} fill="#ffff66" textAnchor="middle" className={styles.hashText}>
+                <text x={x} y={y + 24} fill="var(--yellow)" textAnchor="middle" className={styles.hashText}>
                   {node.id}
                 </text>
 
                 {/* Message */}
-                <text x={x} y={y + 38} fill="#f5ecea" textAnchor="middle" className={styles.msgText}>
+                <text x={x} y={y + 38} fill="var(--text-workspace)" textAnchor="middle" className={styles.msgText}>
                   {node.label.length > 18 ? node.label.substring(0, 15) + '…' : node.label}
                 </text>
 
@@ -194,8 +194,8 @@ const GitGraph: React.FC<GitGraphProps> = ({ data, isInitialized }) => {
                   const pillY = y - 28 - (bIdx * 20);
                   return (
                     <g key={`pill-${bName}`} transform={`translate(${x - pillW / 2}, ${pillY})`}>
-                      <rect width={pillW} height={16} rx={4} fill={isCurrent ? '#a3be8c' : '#4d3a35'} stroke={isCurrent ? '#ffff66' : '#7c625a'} strokeWidth={1} />
-                      <text x={pillW / 2} y={11} textAnchor="middle" fill={isCurrent ? '#231916' : '#f5ecea'} className={styles.tagText} fontWeight="bold">
+                      <rect width={pillW} height={16} rx={4} fill={isCurrent ? 'var(--green)' : 'var(--border-dim)'} stroke={isCurrent ? 'var(--yellow)' : 'var(--border-bright)'} strokeWidth={1} />
+                      <text x={pillW / 2} y={11} textAnchor="middle" fill={isCurrent ? 'var(--bg-page)' : 'var(--text-workspace)'} className={styles.tagText} fontWeight="bold">
                         {bName}
                       </text>
                     </g>
@@ -205,8 +205,8 @@ const GitGraph: React.FC<GitGraphProps> = ({ data, isInitialized }) => {
                 {/* Detached HEAD label */}
                 {isHead && !branch && (
                   <g transform={`translate(${x - 25}, ${y - 28 - (node.branches.length * 20)})`}>
-                    <rect width={50} height={16} rx={4} fill="#ffff66" />
-                    <text x={25} y={11} textAnchor="middle" fill="#231916" className={styles.tagText} fontWeight="bold">HEAD</text>
+                    <rect width={50} height={16} rx={4} fill="var(--yellow)" />
+                    <text x={25} y={11} textAnchor="middle" fill="var(--bg-page)" className={styles.tagText} fontWeight="bold">HEAD</text>
                   </g>
                 )}
               </g>

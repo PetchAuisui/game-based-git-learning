@@ -3,9 +3,12 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: #2e211d;
+  background: var(--bg-card-files);
+  color: var(--text-card-files);
   font-family: 'Fira Code', monospace;
   overflow: hidden;
+  border: 2px solid var(--border-card);
+  border-radius: 8px;
 }
 
 /* Header bar */
@@ -14,8 +17,8 @@
   align-items: center;
   gap: 6px;
   padding: 10px 14px;
-  background: #1b1311;
-  border-bottom: 1px solid #4d3a35;
+  background: rgba(0, 0, 0, 0.05);
+  border-bottom: 2px solid var(--border-card);
   flex-shrink: 0;
 }
 
@@ -24,18 +27,18 @@
 }
 
 .headerTitle {
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.14em;
-  color: #a58e87;
+  letter-spacing: 0.12em;
+  color: inherit;
   text-transform: uppercase;
   flex: 1;
 }
 
 .headerCount {
   font-size: 10px;
-  color: #705c56;
-  background: rgba(77, 58, 53, 0.4);
+  color: var(--files-muted);
+  background: rgba(0, 0, 0, 0.1);
   padding: 1px 6px;
   border-radius: 8px;
 }
@@ -44,9 +47,10 @@
 .path {
   padding: 7px 14px;
   font-size: 11px;
-  color: #705c56;
-  border-bottom: 1px solid #4d3a35;
+  color: var(--files-muted);
+  border-bottom: 2px solid var(--border-card);
   flex-shrink: 0;
+  opacity: 0.8;
 }
 
 /* File list */
@@ -72,12 +76,12 @@
 
 .emptyText {
   font-size: 12px;
-  color: #705c56;
+  color: var(--files-muted);
 }
 
 .emptyHint {
   font-size: 10px;
-  color: #4d3a35;
+  color: var(--files-dim);
   font-style: italic;
 }
 
@@ -95,8 +99,8 @@
 }
 
 .fileItem:hover {
-  background: rgba(77, 58, 53, 0.3);
-  border-color: #4d3a35;
+  background: rgba(0, 0, 0, 0.06);
+  border-color: var(--border-card);
 }
 
 .fileIcon {
@@ -113,7 +117,7 @@
 
 .fileName {
   font-size: 12px;
-  color: #f5ecea;
+  color: inherit;
   font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
@@ -132,33 +136,33 @@
 
 /* Status colors */
 .status_untracked {
-  background: rgba(236, 112, 99, 0.1);
-  color: #ec7063;
-  border: 1px solid rgba(236, 112, 99, 0.25);
+  background: var(--files-untracked-bg);
+  color: var(--files-untracked-fg);
+  border: 1px solid currentColor;
 }
 
 .status_staged {
-  background: rgba(163, 190, 140, 0.1);
-  color: #a3be8c;
-  border: 1px solid rgba(163, 190, 140, 0.25);
+  background: var(--files-staged-bg);
+  color: var(--files-staged-fg);
+  border: 1px solid currentColor;
 }
 
 .status_committed {
-  background: rgba(255, 255, 102, 0.08);
-  color: #ffff66;
-  border: 1px solid rgba(255, 255, 102, 0.2);
+  background: var(--files-committed-bg);
+  color: var(--files-committed-fg);
+  border: 1px solid currentColor;
 }
 
 .status_modified {
-  background: rgba(229, 152, 102, 0.1);
-  color: #e59866;
-  border: 1px solid rgba(229, 152, 102, 0.25);
+  background: var(--files-modified-bg);
+  color: var(--files-modified-fg);
+  border: 1px solid currentColor;
 }
 
 .status_deleted {
-  background: rgba(165, 142, 135, 0.1);
-  color: #a58e87;
-  border: 1px solid rgba(165, 142, 135, 0.2);
+  background: var(--files-deleted-bg);
+  color: var(--files-deleted-fg);
+  border: 1px solid currentColor;
 }
 
 /* UI Actions */
@@ -189,15 +193,15 @@
   gap: 10px;
   padding: 8px 10px;
   border-radius: 6px;
-  background: rgba(77, 58, 53, 0.3);
+  background: rgba(0, 0, 0, 0.05);
   margin-bottom: 4px;
 }
 
 .createInput {
   background: transparent;
   border: none;
-  border-bottom: 1px solid #a3be8c;
-  color: #f5ecea;
+  border-bottom: 1px solid var(--green);
+  color: inherit;
   font-family: 'Fira Code', monospace;
   font-size: 12px;
   outline: none;
@@ -217,7 +221,7 @@
 }
 
 .fileItem:hover .fileActions {
-  opacity: 1;
+  opacity: 0.8;
 }
 
 .actionBtn {
@@ -230,12 +234,12 @@
 }
 
 .actionBtn:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .editorBox {
-  background: #1b1311;
-  border: 1px solid #4d3a35;
+  background: rgba(0, 0, 0, 0.08);
+  border: 2px solid var(--border-card);
   border-radius: 6px;
   padding: 8px;
   margin-top: 4px;
@@ -245,9 +249,9 @@
 }
 
 .editorTextarea {
-  background: transparent;
-  border: 1px solid #2e211d;
-  color: #d4c5c0;
+  background: rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-card);
+  color: inherit;
   font-family: 'Fira Code', monospace;
   font-size: 11px;
   min-height: 80px;
@@ -257,7 +261,7 @@
 }
 
 .editorTextarea:focus {
-  border-color: #a3be8c;
+  border-color: var(--green);
 }
 
 .editorActions {
@@ -277,8 +281,8 @@
 
 .cancelBtn {
   background: transparent;
-  color: #a58e87;
-  border: 1px solid #4d3a35;
+  color: var(--files-muted);
+  border: 1px solid var(--border-card);
 }
 
 .cancelBtn:hover {
@@ -286,11 +290,11 @@
 }
 
 .saveBtn {
-  background: #a3be8c;
-  color: #1b1311;
+  background: var(--green);
+  color: var(--bg-page);
   font-weight: 600;
 }
 
 .saveBtn:hover {
-  background: #b4cc9f;
+  opacity: 0.9;
 }

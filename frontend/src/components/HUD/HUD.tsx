@@ -8,9 +8,11 @@ interface HUDProps {
   score: number;
   timerStart: number;
   onReset?: () => void;
+  theme: 'light' | 'dark';
+  onToggleTheme: () => void;
 }
 
-const HUD: React.FC<HUDProps> = ({ score, timerStart, onReset }) => {
+const HUD: React.FC<HUDProps> = ({ score, timerStart, onReset, theme, onToggleTheme }) => {
   const [elapsed, setElapsed] = useState(0);
 
   useEffect(() => {
@@ -28,27 +30,30 @@ const HUD: React.FC<HUDProps> = ({ score, timerStart, onReset }) => {
 
   return (
     <div className={styles.hud}>
-      <div className={styles.brand}>
-        <span className={styles.brandIcon}>⬡</span>
-        <span className={styles.brandName}>GIT SANDBOX</span>
-      </div>
-
-      <div className={styles.hudSection}>
-        <div className={styles.hudLabel}>COMMITS</div>
-        <div className={`${styles.hudVal} ${styles.gold}`}>{score.toString().padStart(3, '0')}</div>
-      </div>
-
-      <div className={styles.hudSection}>
-        <div className={styles.hudLabel}>STATUS</div>
-        <div className={`${styles.hudVal} ${styles.green}`}>● LIVE</div>
-      </div>
-
-      <div className={styles.hudSection}>
-        <div className={styles.hudLabel}>ELAPSED</div>
-        <div className={`${styles.hudVal} ${styles.timer}`}>{fmt(elapsed)}</div>
+      <div className={styles.brandSection}>
+        <span className={styles.brandName}>COZY_CMD.EXE</span>
+        <span className={styles.lvlBadge}>LVL 14</span>
       </div>
 
       <div className={styles.controls}>
+        {/* Coins / Commits score */}
+        <div className={styles.scoreSection}>
+          <span className={styles.coinIcon}>🪙</span>
+          <span className={styles.scoreVal}>{(score * 128).toLocaleString()} c</span>
+        </div>
+
+        {/* Timer Badge */}
+        <div className={styles.timerBadge}>
+          <span className={styles.clockIcon}>🕒</span>
+          <span className={styles.timerText}>{fmt(elapsed)}</span>
+        </div>
+
+        {/* Theme Toggle Button */}
+        <button className={styles.themeBtn} onClick={onToggleTheme} title="Toggle Theme">
+          {theme === 'light' ? '🌙 Dark' : '☀️ Light'}
+        </button>
+
+        {/* Reset Button */}
         {onReset && (
           <button
             className={styles.resetBtn}

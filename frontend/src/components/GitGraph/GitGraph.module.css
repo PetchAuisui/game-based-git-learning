@@ -1,7 +1,7 @@
 /* src/components/GitGraph/GitGraph.module.css */
 .container {
   height: 100%;
-  background: #231916;
+  background: var(--bg-workspace);
   position: relative;
   display: flex;
   flex-direction: column;
@@ -14,8 +14,8 @@
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(77, 58, 53, 0.12) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(77, 58, 53, 0.12) 1px, transparent 1px);
+    linear-gradient(rgba(0, 0, 0, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.06) 1px, transparent 1px);
   background-size: 22px 22px;
   pointer-events: none;
   z-index: 0;
@@ -27,7 +27,7 @@
   left: 14px;
   font-family: 'Fira Code', monospace;
   font-size: 9px;
-  color: #a58e87;
+  color: var(--muted);
   letter-spacing: 0.15em;
   text-transform: uppercase;
   z-index: 2;
@@ -85,7 +85,7 @@
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.12em;
-  color: #ffff66;
+  color: var(--yellow);
   margin-bottom: 12px;
   text-shadow: 0 0 10px rgba(255, 255, 102, 0.3);
 }
@@ -93,15 +93,15 @@
 .emptyDesc {
   font-family: 'Fira Code', monospace;
   font-size: 11px;
-  color: #705c56;
+  color: var(--muted);
   line-height: 1.6;
 }
 
 .code {
-  background: #1b1311;
-  border: 1px solid #4d3a35;
+  background: rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--border-card);
   padding: 1px 6px;
   border-radius: 4px;
-  color: #a3be8c;
+  color: var(--green);
   font-family: 'Fira Code', monospace;
 }
