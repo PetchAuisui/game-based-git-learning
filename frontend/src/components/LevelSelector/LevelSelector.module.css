@@ -1,0 +1,190 @@
+/* src/components/LevelSelector/LevelSelector.module.css */
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  background-color: var(--bg-page);
+  color: var(--text);
+  font-family: 'Fira Code', monospace;
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px 30px;
+  border-bottom: 2px solid var(--border-card);
+  background: var(--bg-header);
+}
+
+.backBtn {
+  background: transparent;
+  border: 1px solid var(--border-bright);
+  color: var(--text-header);
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  font-weight: bold;
+}
+
+.backBtn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--yellow);
+  color: var(--yellow);
+}
+
+.headerTitle {
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-header);
+}
+
+.content {
+  flex: 1;
+  padding: 30px;
+  overflow-y: auto;
+}
+
+.intro {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 30px;
+  line-height: 1.6;
+}
+
+/* Grid Layout */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+/* Level Card */
+.card {
+  background: var(--bg-card-tasks);
+  border: 2px solid var(--border-card);
+  border-radius: 10px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 200px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.card:hover {
+  border-color: var(--yellow);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.levelName {
+  font-size: 13px;
+  font-weight: bold;
+  color: var(--yellow);
+}
+
+.levelCmd {
+  font-size: 10px;
+  color: var(--orange);
+  flex-shrink: 0;
+}
+
+.levelCmd code {
+  background: rgba(0, 0, 0, 0.25);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.cardBody {
+  flex: 1;
+  margin-bottom: 20px;
+}
+
+.levelDesc {
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--text);
+  opacity: 0.85;
+}
+
+.cardFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 12px;
+}
+
+.startBtn {
+  font-size: 10.5px;
+  color: var(--green);
+  font-weight: bold;
+}
+
+.card:hover .startBtn {
+  color: var(--yellow);
+  text-decoration: underline;
+}
+
+.tasksCount {
+  font-size: 9.5px;
+  color: var(--muted);
+}
+
+/* Empty State */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  border: 2px dashed var(--border-bright);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.05);
+  max-width: 480px;
+  margin: 40px auto;
+}
+
+.emptyIcon {
+  font-size: 40px;
+  margin-bottom: 16px;
+}
+
+.emptyTitle {
+  font-size: 14px;
+  color: var(--yellow);
+  margin-bottom: 8px;
+}
+
+.emptyText {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.emptyText code {
+  background: rgba(0, 0, 0, 0.25);
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: var(--orange);
+}

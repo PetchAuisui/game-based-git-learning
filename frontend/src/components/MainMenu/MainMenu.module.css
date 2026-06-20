@@ -1,0 +1,195 @@
+/* src/components/MainMenu/MainMenu.module.css */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  background-color: var(--bg-page);
+  color: var(--text);
+  font-family: 'Fira Code', monospace;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.themeToggleArea {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.themeBtn {
+  background: rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--border-card);
+  color: var(--muted);
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.themeBtn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--yellow);
+  color: var(--yellow);
+}
+
+.menuBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--bg-card-tasks);
+  border: 2px solid var(--border-card);
+  border-radius: 12px;
+  padding: 40px 30px;
+  width: 100%;
+  max-width: 580px;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  animation: fadeIn 0.4s ease-out;
+}
+
+.logo {
+  font-size: 11px;
+  line-height: 1.2;
+  font-weight: bold;
+  color: var(--yellow);
+  margin-bottom: 20px;
+  white-space: pre;
+  filter: drop-shadow(0 0 4px rgba(255, 255, 102, 0.2));
+}
+
+.title {
+  font-size: 20px;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  color: var(--yellow);
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  font-size: 11.5px;
+  color: var(--muted);
+  line-height: 1.6;
+  max-width: 440px;
+  margin-bottom: 30px;
+}
+
+.buttonList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 280px;
+  margin-bottom: 20px;
+}
+
+.menuBtnPrimary, .menuBtnSecondary {
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 12px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.menuBtnPrimary {
+  background: var(--green);
+  border: 1px solid var(--green);
+  color: #000;
+}
+
+.menuBtnPrimary:hover {
+  background: var(--yellow);
+  border-color: var(--yellow);
+  transform: translateY(-1px);
+}
+
+.menuBtnSecondary {
+  background: transparent;
+  border: 1px solid var(--border-bright);
+  color: var(--text);
+}
+
+.menuBtnSecondary:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--yellow);
+  color: var(--yellow);
+}
+
+/* How to card details */
+.howToCard {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px dashed var(--border-bright);
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 16px;
+  width: 100%;
+  text-align: left;
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.howToTitle {
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--orange);
+  margin-bottom: 12px;
+}
+
+.howToList {
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.howToList li {
+  font-size: 10.5px;
+  line-height: 1.6;
+  color: var(--text);
+  opacity: 0.9;
+}
+
+.howToList code {
+  background: rgba(0, 0, 0, 0.25);
+  padding: 1px 4px;
+  border-radius: 3px;
+  color: var(--yellow);
+}
+
+.closeHowToBtn {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-size: 10px;
+  text-decoration: underline;
+  cursor: pointer;
+  display: block;
+  margin: 14px auto 0;
+  font-family: inherit;
+}
+
+.closeHowToBtn:hover {
+  color: var(--text);
+}
+
+.footer {
+  font-size: 9px;
+  color: var(--dim);
+  margin-top: 30px;
+  letter-spacing: 0.1em;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

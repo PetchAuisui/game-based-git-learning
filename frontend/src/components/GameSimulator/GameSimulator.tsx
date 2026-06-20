@@ -7,14 +7,15 @@ import Terminal from '@/components/Terminal/Terminal';
 import FileExplorer from '@/components/FileExplorer/FileExplorer';
 import GitGraph from '@/components/GitGraph/GitGraph';
 import Tasks from '@/components/Tasks/Tasks';
-import { useGameState } from '@/hooks/useGameState';
+import { useGameState, LevelConfig } from '@/hooks/useGameState';
 import styles from './GameSimulator.module.css';
 
 interface GameSimulatorProps {
+  selectedLevel: LevelConfig | null;
   onReturnMenu: () => void;
 }
 
-const GameSimulator: React.FC<GameSimulatorProps> = ({ onReturnMenu }) => {
+const GameSimulator: React.FC<GameSimulatorProps> = ({ selectedLevel, onReturnMenu }) => {
   const [history, setHistory] = useState<React.ReactNode[]>([]);
   const [isExecuting, setIsExecuting] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
@@ -57,6 +58,13 @@ const GameSimulator: React.FC<GameSimulatorProps> = ({ onReturnMenu }) => {
     unloadLevel,
     levels,
   } = useGameState();
+
+  // Load level on mount or when selectedLevel changes
+  useEffect(() => {
+    if (selectedLevel) {
+      loadLevel(selectedLevel);
+    }
+  }, [selectedLevel, loadLevel]);
 
   // Resizable splitter between graph and terminal
   const [splitterHeight, setSplitterHeight] = useState(55);
@@ -149,6 +157,7 @@ const GameSimulator: React.FC<GameSimulatorProps> = ({ onReturnMenu }) => {
         onReset={handleReset}
         theme={theme}
         onToggleTheme={toggleTheme}
+        onReturnMenu={onReturnMenu}
       />
 
       <div className={styles.mainContent}>

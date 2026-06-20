@@ -10,9 +10,10 @@ interface HUDProps {
   onReset?: () => void;
   theme: 'light' | 'dark';
   onToggleTheme: () => void;
+  onReturnMenu?: () => void;
 }
 
-const HUD: React.FC<HUDProps> = ({ score, timerStart, onReset, theme, onToggleTheme }) => {
+const HUD: React.FC<HUDProps> = ({ score, timerStart, onReset, theme, onToggleTheme, onReturnMenu }) => {
   const [elapsed, setElapsed] = useState(0);
 
   useEffect(() => {
@@ -31,6 +32,11 @@ const HUD: React.FC<HUDProps> = ({ score, timerStart, onReset, theme, onToggleTh
   return (
     <div className={styles.hud}>
       <div className={styles.brandSection}>
+        {onReturnMenu && (
+          <button className={styles.backBtn} onClick={onReturnMenu} title="กลับสู่หน้าเลือกด่าน">
+            ← BACK
+          </button>
+        )}
         <span className={styles.brandName}>COZY_CMD.EXE</span>
         <span className={styles.lvlBadge}>LVL 14</span>
       </div>
