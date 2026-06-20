@@ -1,0 +1,37 @@
+{
+  "levelId": "level2-branch",
+  "levelName": "ด่าน 2: การจัดการกิ่ง (Branches)",
+  "command": "git branch & checkout",
+  "description": "เรียนรู้วิธีการสร้างกิ่งสาขา (branch) ใหม่ เพื่อแยกพัฒนาฟีเจอร์ใหม่โดยไม่รบกวนโค้ดหลัก",
+  "initialState": {
+    "isInitialized": true,
+    "files": [
+      {
+        "path": "README.md",
+        "content": "# Game Project\nThis is a cool game project."
+      }
+    ],
+    "commands": [
+      "git add README.md",
+      "git commit -m \"Initial commit\""
+    ]
+  },
+  "tasks": [
+    {
+      "id": "task-create-branch",
+      "label": "สร้าง branch ใหม่ชื่อ \"feature-login\" (git branch feature-login)",
+      "check": {
+        "type": "branch_exists",
+        "params": { "branch": "feature-login" }
+      }
+    },
+    {
+      "id": "task-checkout-branch",
+      "label": "สลับไปยังกิ่ง \"feature-login\" เพื่อเริ่มทำงาน (git checkout feature-login)",
+      "check": {
+        "type": "current_branch",
+        "params": { "branch": "feature-login" }
+      }
+    }
+  ]
+}

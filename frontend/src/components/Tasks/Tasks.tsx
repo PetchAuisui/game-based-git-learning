@@ -2,53 +2,93 @@
 'use client';
 
 import React from 'react';
+import { LevelConfig } from '@/hooks/useGameState';
 import styles from './Tasks.module.css';
 
 interface TasksProps {
-  isInitialized: boolean;
-  hasFiles: boolean;
-  score: number;
+  levels: LevelConfig[];
+  currentLevel: LevelConfig | null;
+  completedTasks: string[];
+  onLoadLevel: (config: LevelConfig) => Promise<void>;
+  onUnloadLevel: () => void;
 }
 
-const Tasks: React.FC<TasksProps> = ({ isInitialized, hasFiles, score }) => {
-  const tasksList = [
-    {
-      id: 'firewall',
-      label: 'Bypass Firewall',
-      completed: isInitialized,
-    },
-    {
-      id: 'dat_files',
-      label: 'Download .DAT files',
-      completed: hasFiles,
-    },
-    {
-      id: 'audit_logs',
-      label: 'Erase audit logs',
-      completed: score >= 2,
-    },
-  ];
-
+const Tasks: React.FC<TasksProps> = ({
+  levels,
+  currentLevel,
+  completedTasks,
+  onLoadLevel,
+  onUnloadLevel
+}) => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <span className={styles.headerIcon}>≈</span>
-        <span className={styles.headerTitle}>Tasks</span>
+        <div className={styles.headerTitleGroup}>
+          <span className={styles.headerIcon}>≈</span>
+          <span className={styles.headerTitle}>Tasks</span>
+        </div>
+        {currentLevel && (
+          <button className={styles.clearBtn} onClick={onUnloadLevel} title="Unload level">
+            Clear Level
+          </button>
+        )}
       </div>
 
-      <div className={styles.taskList}>
-        {tasksList.map(task => (
-          <div
-            key={task.id}
-            className={`${styles.taskItem} ${task.completed ? styles.completed : ''}`}
-          >
-            <span className={styles.checkbox}>
-              {task.completed ? '✓' : ''}
-            </span>
-            <span className={styles.label}>{task.label}</span>
+      {!currentLevel ? (
+        <div className={styles.levelListContainer}>
+          <div className={styles.levelListTitle}>กรุณาเลือกด่านเพื่อเริ่มต้น:</div>
+          
+          {levels.length === 0 ? (
+            <div className={styles.emptyLevels}>
+              <div className={styles.emptyIcon}>📁</div>
+              <div className={styles.emptyText}>ไม่พบไฟล์ด่านในระบบ</div>
+              <div className={styles.emptyHint}>กรุณาใส่ไฟล์ด่าน .json ลงในโฟลเดอร์ <code>backend/levels/</code></div>
+            </div>
+          ) : (
+            <div className={styles.levelList}>
+              {levels.map(lvl => (
+                <button
+                  key={lvl.levelId}
+                  className={styles.levelCard}
+                  onClick={() => onLoadLevel(lvl)}
+                >
+                  <div className={styles.levelCardHeader}>
+                    <span className={styles.levelCardName}>{lvl.levelName}</span>
+                    <span className={styles.levelCardCmd}><code>{lvl.command}</code></span>
+                  </div>
+                  <div className={styles.levelCardDesc}>{lvl.description}</div>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className={styles.levelContent}>
+          <div className={styles.levelHeader}>
+            <div className={styles.levelName}>{currentLevel.levelName}</div>
+            <div className={styles.levelCommand}>เป้าหมาย: {currentLevel.command}</div>
           </div>
-        ))}
-      </div>
+          
+          <div className={styles.levelDesc}>{currentLevel.description}</div>
+
+          <div className={styles.taskList}>
+            {currentLevel.tasks.map(task => {
+              const isCompleted = completedTasks.includes(task.id);
+              return (
+                <div
+                  key={task.id}
+                  className={`${styles.taskItem} ${isCompleted ? styles.completed : ''}`}
+                >
+                  <span className={styles.checkbox}>
+                    {isCompleted ? '✓' : ''}
+                  </span>
+                  <span className={styles.label}>{task.label}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -29,7 +29,28 @@ interface CommandResult {
   output: string;
   error?: string;
   gitGraph?: GitGraph;
-  files?: Array<{ path: string; content: string }>;
+  files?: Array<{ path: string; content: string; status: 'untracked' | 'staged' | 'committed' | 'modified' | 'deleted' }>;
+}
+
+function getGitStatus(head: number, workdir: number, stage: number): 'untracked' | 'staged' | 'committed' | 'modified' | 'deleted' {
+  if (head === 0) {
+    if (stage === 0) return 'untracked';
+    if (stage === 2) return 'staged';
+  }
+  if (head === 1) {
+    if (workdir === 0) {
+      if (stage === 0) return 'staged';
+      return 'deleted';
+    }
+    if (workdir === 1 && stage === 1) {
+      return 'committed';
+    }
+    if (workdir === 2) {
+      if (stage === 1) return 'modified';
+      if (stage === 2) return 'staged';
+    }
+  }
+  return 'untracked';
 }
 
 export class GitEngine {
@@ -41,9 +62,14 @@ export class GitEngine {
   private HEAD = 'detached';
   private commitCounter = 0;
   private stateFilePath = path.join(process.cwd(), 'data', 'sandbox-state.json');
+  private isGitInitialized = false;
 
   constructor() {
     this.initialize();
+  }
+
+  get isInitialized(): boolean {
+    return this.isGitInitialized;
   }
 
   private loadState(): boolean {
@@ -57,6 +83,7 @@ export class GitEngine {
         this.branches = new Map(state.branches);
         this.currentBranch = state.currentBranch;
         this.commitCounter = state.commitCounter;
+        this.isGitInitialized = state.isGitInitialized ?? true;
         return true;
       }
     } catch (e) {
@@ -72,7 +99,8 @@ export class GitEngine {
         commits: Array.from(this.commits.entries()),
         branches: Array.from(this.branches.entries()),
         currentBranch: this.currentBranch,
-        commitCounter: this.commitCounter
+        commitCounter: this.commitCounter,
+        isGitInitialized: this.isGitInitialized
       };
       
       const dir = path.dirname(this.stateFilePath);
@@ -93,18 +121,7 @@ export class GitEngine {
 
     // Set up memfs with initial structure
     this.memfs.reset();
-    
-    // Initialize git repo
-    try {
-      await git.init({
-        fs: this.memfs as any,
-        dir: '/',
-      });
-
-      this.branches.set('main', 'HEAD~0');
-    } catch (error) {
-      console.error('Failed to initialize git:', error);
-    }
+    this.isGitInitialized = false;
   }
 
   async executeCommand(command: string): Promise<CommandResult> {
@@ -145,6 +162,14 @@ export class GitEngine {
   private async handleGitCommand(args: string[]): Promise<CommandResult> {
     const subcommand = args[0];
 
+    if (!this.isGitInitialized && subcommand !== 'init') {
+      return {
+        success: false,
+        output: '',
+        error: 'fatal: not a git repository (or any of the parent directories): .git',
+      };
+    }
+
     switch (subcommand) {
       case 'init':
         return await this.gitInit();
@@ -167,7 +192,7 @@ export class GitEngine {
           success: true,
           output: 'git version 2.39.2 (Sandbox Engine)',
           gitGraph: this.getGitGraph(),
-          files: this.getFiles(),
+          files: await this.getFiles(),
         };
       default:
         return {
@@ -185,11 +210,14 @@ export class GitEngine {
         dir: '/',
       });
 
+      this.isGitInitialized = true;
+      this.branches.set('main', 'HEAD~0');
+
       return {
         success: true,
         output: 'Initialized empty Git repository',
         gitGraph: this.getGitGraph(),
-        files: this.getFiles(),
+        files: await this.getFiles(),
       };
     } catch (error) {
       return {
@@ -220,7 +248,7 @@ export class GitEngine {
           success: true,
           output: `Added ${files.length} files to staging area`,
           gitGraph: this.getGitGraph(),
-          files: this.getFiles(),
+          files: await this.getFiles(),
         };
       } else {
         // Add specific file
@@ -234,7 +262,7 @@ export class GitEngine {
           success: true,
           output: `Added '${filePattern}' to staging area`,
           gitGraph: this.getGitGraph(),
-          files: this.getFiles(),
+          files: await this.getFiles(),
         };
       }
     } catch (error) {
@@ -284,7 +312,7 @@ export class GitEngine {
         success: true,
         output: `[${this.currentBranch} ${commitId.substring(0, 7)}] ${message}`,
         gitGraph: this.getGitGraph(),
-        files: this.getFiles(),
+        files: await this.getFiles(),
       };
     } catch (error) {
       return {
@@ -315,7 +343,7 @@ export class GitEngine {
         success: true,
         output: output || 'No commits yet',
         gitGraph: this.getGitGraph(),
-        files: this.getFiles(),
+        files: await this.getFiles(),
       };
     } catch (error) {
       return {
@@ -386,7 +414,7 @@ export class GitEngine {
         success: true,
         output: output || 'nothing to commit, working tree clean',
         gitGraph: this.getGitGraph(),
-        files: this.getFiles(),
+        files: await this.getFiles(),
       };
     } catch (error) {
       return {
@@ -410,7 +438,7 @@ export class GitEngine {
           success: true,
           output: output || 'No branches',
           gitGraph: this.getGitGraph(),
-          files: this.getFiles(),
+          files: await this.getFiles(),
         };
       } else {
         // Create new branch
@@ -421,7 +449,7 @@ export class GitEngine {
           success: true,
           output: `Created branch '${newBranch}'`,
           gitGraph: this.getGitGraph(),
-          files: this.getFiles(),
+          files: await this.getFiles(),
         };
       }
     } catch (error) {
@@ -464,7 +492,7 @@ export class GitEngine {
         success: true,
         output: `Switched to branch '${target}'`,
         gitGraph: this.getGitGraph(),
-        files: this.getFiles(),
+        files: await this.getFiles(),
       };
     } catch (error) {
       return {
@@ -501,7 +529,7 @@ export class GitEngine {
         success: true,
         output,
         gitGraph: this.getGitGraph(),
-        files: this.getFiles(),
+        files: await this.getFiles(),
       };
     } catch (error) {
       return {
@@ -524,7 +552,7 @@ export class GitEngine {
       return {
         success: true,
         output: `Created file '${filename}'`,
-        files: this.getFiles(),
+        files: await this.getFiles(),
       };
     } else if (cmd === 'echo') {
       let content = parts.slice(1).join(' ');
@@ -537,11 +565,11 @@ export class GitEngine {
         return {
           success: true,
           output: `Written to '${filename}'`,
-          files: this.getFiles(),
+          files: await this.getFiles(),
         };
       }
 
-      return { success: true, output: content, files: this.getFiles() };
+      return { success: true, output: content, files: await this.getFiles() };
     } else if (cmd === 'mkdir') {
       const dirname = parts[1];
       if (!dirname) {
@@ -551,7 +579,7 @@ export class GitEngine {
       return {
         success: true,
         output: `Created directory '${dirname}'`,
-        files: this.getFiles(),
+        files: await this.getFiles(),
       };
     }
 
@@ -566,7 +594,7 @@ export class GitEngine {
       try {
         const entries = this.memfs.readdirSync(dir) as string[];
         const output = entries.filter((e) => !e.startsWith('.')).join('\n');
-        return { success: true, output, files: this.getFiles() };
+        return { success: true, output, files: await this.getFiles() };
       } catch (error) {
         return {
           success: false,
@@ -575,7 +603,7 @@ export class GitEngine {
         };
       }
     } else if (cmd === 'pwd') {
-      return { success: true, output: '/', files: this.getFiles() };
+      return { success: true, output: '/', files: await this.getFiles() };
     }
 
     return { success: false, output: '', error: `Unknown command: ${cmd}` };
@@ -605,22 +633,58 @@ export class GitEngine {
     return files;
   }
 
-  getFiles(): Array<{ path: string; content: string }> {
-    const files: Array<{ path: string; content: string }> = [];
+  async getFiles(): Promise<Array<{ path: string; content: string; status: 'untracked' | 'staged' | 'committed' | 'modified' | 'deleted' }>> {
+    const files: Array<{ path: string; content: string; status: any }> = [];
 
     try {
-      const allFiles = this.memfs.readdirSync('/') as string[];
+      const allFiles = await this.getAllFiles('/');
+      const statusMap: Record<string, 'untracked' | 'staged' | 'committed' | 'modified' | 'deleted'> = {};
 
-      allFiles.forEach((file) => {
-        if (!file.startsWith('.')) {
-          try {
-            const content = this.memfs.readFileSync(`/${file}`, 'utf-8') as string;
-            files.push({ path: `/${file}`, content });
-          } catch {
-            // Ignore directories and other issues
-          }
+      if (this.isGitInitialized) {
+        try {
+          const matrix = await git.statusMatrix({
+            fs: this.memfs as any,
+            dir: '/',
+          });
+
+          matrix.forEach(([filepath, head, workdir, stage]) => {
+            statusMap[filepath] = getGitStatus(head, workdir, stage);
+          });
+        } catch (e) {
+          console.error('Error getting status matrix:', e);
         }
-      });
+      }
+
+      // Add all files currently present in workspace
+      for (const file of allFiles) {
+        const relativePath = file.startsWith('/') ? file.substring(1) : file;
+        let content = '';
+        try {
+          content = this.memfs.readFileSync(file, 'utf-8') as string;
+        } catch (e) {}
+
+        const status = this.isGitInitialized ? (statusMap[relativePath] || 'untracked') : 'untracked';
+        files.push({
+          path: file,
+          content,
+          status,
+        });
+      }
+
+      // Add files that were deleted but are still in index/HEAD
+      if (this.isGitInitialized) {
+        Object.entries(statusMap).forEach(([filepath, status]) => {
+          if (status === 'deleted' || (status === 'staged' && !allFiles.some(f => (f.startsWith('/') ? f.substring(1) : f) === filepath))) {
+            const displayStatus = status === 'staged' ? 'staged' : 'deleted';
+            files.push({
+              path: filepath.startsWith('/') ? filepath : `/${filepath}`,
+              content: '',
+              status: displayStatus,
+            });
+          }
+        });
+      }
+
     } catch (error) {
       console.error('Error reading files:', error);
     }
@@ -683,13 +747,36 @@ export class GitEngine {
     };
   }
 
-  getState() {
+  async getState() {
     return {
-      files: this.getFiles(),
+      files: await this.getFiles(),
       gitGraph: this.getGitGraph(),
       currentBranch: this.currentBranch,
       branches: Array.from(this.branches.keys()),
+      isInitialized: this.isGitInitialized,
     };
+  }
+
+  async setupLevelState(initialState: { isInitialized: boolean; files?: Array<{ path: string; content: string }>; commands?: string[] }): Promise<void> {
+    this.reset();
+
+    if (initialState.files && Array.isArray(initialState.files)) {
+      for (const file of initialState.files) {
+        this.writeFile(file.path, file.content || '');
+      }
+    }
+
+    if (initialState.isInitialized && (!initialState.commands || initialState.commands.length === 0)) {
+      await this.gitInit();
+    }
+
+    if (initialState.commands && Array.isArray(initialState.commands)) {
+      for (const cmd of initialState.commands) {
+        await this.executeCommand(cmd);
+      }
+    }
+
+    this.saveState();
   }
 
   reset(): void {
@@ -699,6 +786,7 @@ export class GitEngine {
     this.currentBranch = 'main';
     this.HEAD = 'detached';
     this.commitCounter = 0;
+    this.isGitInitialized = false;
     
     try {
       if (existsSync(this.stateFilePath)) {

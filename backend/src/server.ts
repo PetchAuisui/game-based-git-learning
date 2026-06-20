@@ -1,5 +1,7 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
+import { promises as fs } from 'fs';
+import * as path from 'path';
 import { GitEngine } from './git-engine';
 
 const app = express();
@@ -35,6 +37,7 @@ app.post('/api/execute', async (req: Request, res: Response) => {
       error: result.error,
       gitGraph: result.gitGraph,
       files: result.files,
+      isInitialized: gitEngine.isInitialized,
     });
   } catch (error) {
     res.status(500).json({ 
@@ -48,10 +51,72 @@ app.post('/api/execute', async (req: Request, res: Response) => {
  * Get current state (files, git graph, HEAD, etc.)
  * GET /api/state
  */
-app.get('/api/state', (req: Request, res: Response) => {
+app.get('/api/state', async (req: Request, res: Response) => {
   try {
-    const state = gitEngine.getState();
+    const state = await gitEngine.getState();
     res.json(state);
+  } catch (error) {
+    res.status(500).json({ 
+      error: error instanceof Error ? error.message : 'Unknown error' 
+    });
+  }
+});
+
+/**
+ * Setup level state
+ * POST /api/level/setup
+ * Body: { initialState: { isInitialized: boolean, files?: Array<{ path, content }>, commands?: string[] } }
+ */
+app.post('/api/level/setup', async (req: Request, res: Response) => {
+  try {
+    const { initialState } = req.body;
+    if (!initialState) {
+      return res.status(400).json({ error: 'initialState is required' });
+    }
+    await gitEngine.setupLevelState(initialState);
+    const state = await gitEngine.getState();
+    res.json({ success: true, ...state });
+  } catch (error) {
+    res.status(500).json({ 
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error' 
+    });
+  }
+});
+
+/**
+ * Get all levels configuration from backend levels folder
+ * GET /api/levels
+ */
+app.get('/api/levels', async (req: Request, res: Response) => {
+  try {
+    const levelsDir = path.join(process.cwd(), 'levels');
+    const { existsSync, mkdirSync } = require('fs');
+    
+    if (!existsSync(levelsDir)) {
+      mkdirSync(levelsDir, { recursive: true });
+    }
+    
+    const files = await fs.readdir(levelsDir);
+    const levels = [];
+    
+    for (const file of files) {
+      if (file.endsWith('.json')) {
+        const filePath = path.join(levelsDir, file);
+        try {
+          const content = await fs.readFile(filePath, 'utf-8');
+          const config = JSON.parse(content);
+          if (config.levelId && config.levelName) {
+            levels.push(config);
+          }
+        } catch (err) {
+          console.error(`Error parsing level file ${file}:`, err);
+        }
+      }
+    }
+    
+    levels.sort((a, b) => a.levelId.localeCompare(b.levelId));
+    res.json(levels);
   } catch (error) {
     res.status(500).json({ 
       error: error instanceof Error ? error.message : 'Unknown error' 
@@ -101,7 +166,7 @@ app.get('/api/file', (req: Request, res: Response) => {
  * POST /api/file
  * Body: { path: string, content: string }
  */
-app.post('/api/file', (req: Request, res: Response) => {
+app.post('/api/file', async (req: Request, res: Response) => {
   try {
     const { path, content } = req.body;
     
@@ -110,7 +175,7 @@ app.post('/api/file', (req: Request, res: Response) => {
     }
 
     gitEngine.writeFile(path, content || '');
-    const files = gitEngine.getFiles();
+    const files = await gitEngine.getFiles();
     
     res.json({ success: true, files });
   } catch (error) {
@@ -125,7 +190,7 @@ app.post('/api/file', (req: Request, res: Response) => {
  * DELETE /api/file
  * Query: { path: string }
  */
-app.delete('/api/file', (req: Request, res: Response) => {
+app.delete('/api/file', async (req: Request, res: Response) => {
   try {
     const { path } = req.query;
     
@@ -134,7 +199,7 @@ app.delete('/api/file', (req: Request, res: Response) => {
     }
 
     gitEngine.deleteFile(path);
-    const files = gitEngine.getFiles();
+    const files = await gitEngine.getFiles();
     
     res.json({ success: true, files });
   } catch (error) {

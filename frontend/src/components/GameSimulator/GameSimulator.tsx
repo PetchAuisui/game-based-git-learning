@@ -50,6 +50,12 @@ const GameSimulator: React.FC<GameSimulatorProps> = ({ onReturnMenu }) => {
     resetSandbox,
     createOrUpdateFile,
     deleteFile,
+    currentLevel,
+    completedTasks,
+    isLevelCompleted,
+    loadLevel,
+    unloadLevel,
+    levels,
   } = useGameState();
 
   // Resizable splitter between graph and terminal
@@ -150,9 +156,11 @@ const GameSimulator: React.FC<GameSimulatorProps> = ({ onReturnMenu }) => {
         <div className={styles.leftCol}>
           <div className={styles.tasksCard}>
             <Tasks
-              isInitialized={isInitialized}
-              hasFiles={files.length > 0}
-              score={score}
+              levels={levels}
+              currentLevel={currentLevel}
+              completedTasks={completedTasks}
+              onLoadLevel={loadLevel}
+              onUnloadLevel={unloadLevel}
             />
           </div>
           <div className={styles.filesCard}>
@@ -192,6 +200,28 @@ const GameSimulator: React.FC<GameSimulatorProps> = ({ onReturnMenu }) => {
       {isExecuting && (
         <div className={styles.validatingBanner}>
           Executing...
+        </div>
+      )}
+
+      {/* Success Modal */}
+      {isLevelCompleted && currentLevel && (
+        <div className={styles.successOverlay}>
+          <div className={styles.successModal}>
+            <div className={styles.successIcon}>🎉</div>
+            <h2 className={styles.successTitle}>ยินดีด้วย! คุณผ่านด่านแล้ว</h2>
+            <div className={styles.successLevelName}>{currentLevel.levelName}</div>
+            <p className={styles.successDesc}>
+              คุณได้เรียนรู้และเข้าใจการใช้งานคำสั่ง <code>{currentLevel.command}</code> เป็นที่เรียบร้อยแล้ว
+            </p>
+            <div className={styles.successActions}>
+              <button className={styles.successBtnSecondary} onClick={handleReset}>
+                เล่นอีกครั้ง (Reset)
+              </button>
+              <button className={styles.successBtnPrimary} onClick={unloadLevel}>
+                เลือกด่านใหม่ (New Level)
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

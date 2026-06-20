@@ -31,6 +31,7 @@ export interface GitGraphData {
 interface BackendFile {
   path: string;
   content: string;
+  status?: 'untracked' | 'staged' | 'committed' | 'modified' | 'deleted';
 }
 
 interface BackendCommitNode {
@@ -52,6 +53,7 @@ interface BackendState {
   gitGraph: BackendGitGraph;
   currentBranch: string;
   branches: string[];  // branch names array
+  isInitialized?: boolean;
 }
 
 // ── Transform helpers ──
@@ -59,7 +61,7 @@ interface BackendState {
 function transformFiles(backendFiles: BackendFile[]): FileState[] {
   return (backendFiles || []).map(f => ({
     name: f.path.replace(/^\//, ''), // strip leading slash
-    status: 'committed' as const,    // backend doesn't track staging status; treat as committed for now
+    status: f.status || 'untracked',
     content: f.content,
   }));
 }
@@ -86,6 +88,102 @@ function transformGraph(bg: BackendGitGraph | undefined, currentBranch: string):
   };
 }
 
+// ── Level Interfaces ──
+
+export interface TaskConfig {
+  id: string;
+  label: string;
+  check: {
+    type: 'git_initialized' | 'file_exists' | 'file_contains' | 'file_staged' | 'file_committed' | 'current_branch' | 'branch_exists' | 'commit_count_min' | 'commit_message_contains' | 'file_modified' | 'has_no_untracked';
+    params?: Record<string, any>;
+  };
+}
+
+export interface LevelConfig {
+  levelId: string;
+  levelName: string;
+  command: string;
+  description: string;
+  initialState: {
+    isInitialized: boolean;
+    files?: Array<{ path: string; content: string }>;
+    commands?: string[];
+  };
+  tasks: TaskConfig[];
+}
+
+// ── Check Evaluation Engine ──
+
+function evaluateTaskCheck(
+  check: TaskConfig['check'],
+  files: FileState[],
+  gitGraph: GitGraphData,
+  isInitialized: boolean
+): boolean {
+  const params = check.params || {};
+  const cleanPath = (p: string) => (p || '').replace(/^\//, '');
+
+  switch (check.type) {
+    case 'git_initialized':
+      return isInitialized;
+
+    case 'file_exists': {
+      const target = cleanPath(params.path);
+      return files.some(f => f.name === target && f.status !== 'deleted');
+    }
+
+    case 'file_contains': {
+      const target = cleanPath(params.path);
+      const content = params.content || '';
+      const file = files.find(f => f.name === target && f.status !== 'deleted');
+      return !!file && (file.content || '').includes(content);
+    }
+
+    case 'file_staged': {
+      const target = cleanPath(params.path);
+      const file = files.find(f => f.name === target);
+      return !!file && file.status === 'staged';
+    }
+
+    case 'file_committed': {
+      const target = cleanPath(params.path);
+      const file = files.find(f => f.name === target);
+      return !!file && file.status === 'committed';
+    }
+
+    case 'current_branch': {
+      return gitGraph.branch === params.branch;
+    }
+
+    case 'branch_exists': {
+      return Object.keys(gitGraph.branches).includes(params.branch);
+    }
+
+    case 'commit_count_min': {
+      return gitGraph.nodes.length >= (params.count || 1);
+    }
+
+    case 'commit_message_contains': {
+      if (gitGraph.nodes.length === 0) return false;
+      const headNode = gitGraph.nodes.find(n => n.isHead) || gitGraph.nodes[0];
+      return headNode ? headNode.label.includes(params.message || '') : false;
+    }
+
+    case 'file_modified': {
+      const target = cleanPath(params.path);
+      const file = files.find(f => f.name === target);
+      return !!file && file.status === 'modified';
+    }
+
+    case 'has_no_untracked': {
+      return !files.some(f => f.status === 'untracked');
+    }
+
+    default:
+      return false;
+  }
+}
+
 // ── Hook ──
 
 const EMPTY_GRAPH: GitGraphData = { nodes: [], head: null, branch: 'main', branches: {} };
@@ -100,6 +198,12 @@ export function useGameState() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Level State
+  const [currentLevel, setCurrentLevel] = useState<LevelConfig | null>(null);
+  const [completedTasks, setCompletedTasks] = useState<string[]>([]);
+  const [isLevelCompleted, setIsLevelCompleted] = useState<boolean>(false);
+  const [levels, setLevels] = useState<LevelConfig[]>([]);
+
   const applyStateUpdate = useCallback((data: BackendState & { success?: boolean; output?: any }) => {
     const branch = data.currentBranch || data.gitGraph?.currentBranch || 'main';
     const transformedFiles = transformFiles(data.files || []);
@@ -109,11 +213,7 @@ export function useGameState() {
     setGitGraph(transformedGraph);
     setCurrentBranch(branch);
     
-    // isInitialized = true whenever there's a .git directory (git init has been run).
-    // We detect this by checking if gitGraph exists with even an empty nodes array 
-    // but with branches. The backend always initializes git, so we mark it as true 
-    // once we've confirmed we can talk to the backend.
-    setIsInitialized(true);
+    setIsInitialized(data.isInitialized ?? false);
     
     // Score = commit count
     setScore(transformedGraph.nodes.length);
@@ -132,22 +232,93 @@ export function useGameState() {
     }
   }, [applyStateUpdate]);
 
+  const fetchLevels = useCallback(async () => {
+    try {
+      const res = await api.get('/levels');
+      if (Array.isArray(res.data)) {
+        setLevels(res.data);
+      }
+    } catch (e) {
+      console.error('Failed to load levels', e);
+    }
+  }, []);
+
   useEffect(() => {
     setTimerStart(Date.now());
     fetchState();
-  }, [fetchState]);
+    fetchLevels();
+  }, [fetchState, fetchLevels]);
+
+  // Dynamic task verification hook
+  useEffect(() => {
+    if (!currentLevel) {
+      setCompletedTasks([]);
+      setIsLevelCompleted(false);
+      return;
+    }
+
+    const completed: string[] = [];
+    currentLevel.tasks.forEach(task => {
+      if (evaluateTaskCheck(task.check, files, gitGraph, isInitialized)) {
+        completed.push(task.id);
+      }
+    });
+
+    setCompletedTasks(completed);
+
+    if (currentLevel.tasks.length > 0 && completed.length === currentLevel.tasks.length) {
+      setIsLevelCompleted(true);
+    } else {
+      setIsLevelCompleted(false);
+    }
+  }, [currentLevel, files, gitGraph, isInitialized]);
+
+  const loadLevel = useCallback(async (config: LevelConfig) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const res = await api.post('/level/setup', { initialState: config.initialState });
+      if (res.data && res.data.success) {
+        const data = res.data;
+        const branch = data.currentBranch || data.gitGraph?.currentBranch || 'main';
+        const transformedFiles = transformFiles(data.files || []);
+        const transformedGraph = transformGraph(data.gitGraph, branch);
+        
+        setFiles(transformedFiles);
+        setGitGraph(transformedGraph);
+        setCurrentBranch(branch);
+        setIsInitialized(data.isInitialized ?? false);
+        setScore(0);
+        
+        setCurrentLevel(config);
+        setCompletedTasks([]);
+        setIsLevelCompleted(false);
+      } else {
+        throw new Error(res.data.error || 'Failed to initialize level state');
+      }
+    } catch (e: any) {
+      console.error('Error loading level:', e);
+      setError(e.message || 'Failed to load level configuration');
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  const unloadLevel = useCallback(() => {
+    setCurrentLevel(null);
+    setCompletedTasks([]);
+    setIsLevelCompleted(false);
+  }, []);
 
   const executeCommand = useCallback(async (cmd: string): Promise<{ success: boolean; output: string[] }> => {
     try {
       const res = await api.post('/execute', { command: cmd });
       const data = res.data;
 
-      // Update state if we got file/graph updates back
       if (data.files !== undefined || data.gitGraph !== undefined) {
         applyStateUpdate({ ...data, currentBranch: data.gitGraph?.currentBranch || currentBranch });
       }
 
-      // Extract output lines
       let lines: string[] = [];
       if (Array.isArray(data.output)) {
         lines = data.output;
@@ -169,11 +340,14 @@ export function useGameState() {
   const resetSandbox = useCallback(async () => {
     setIsLoading(true);
     try {
-      await api.post('/reset');
-      // Re-fetch fresh state after reset
-      const res = await api.get('/state');
-      applyStateUpdate(res.data);
-      setScore(0);
+      if (currentLevel) {
+        await loadLevel(currentLevel);
+      } else {
+        await api.post('/reset');
+        const res = await api.get('/state');
+        applyStateUpdate(res.data);
+        setScore(0);
+      }
       setIsLoading(false);
       return true;
     } catch (e) {
@@ -181,7 +355,7 @@ export function useGameState() {
       setIsLoading(false);
       return false;
     }
-  }, [applyStateUpdate]);
+  }, [currentLevel, loadLevel, applyStateUpdate]);
 
   const createOrUpdateFile = useCallback(async (path: string, content: string = '') => {
     try {
@@ -223,5 +397,12 @@ export function useGameState() {
     fetchState,
     createOrUpdateFile,
     deleteFile,
+    currentLevel,
+    completedTasks,
+    isLevelCompleted,
+    loadLevel,
+    unloadLevel,
+    levels,
+    fetchLevels,
   };
 }

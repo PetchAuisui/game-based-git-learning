@@ -98,3 +98,177 @@
   background: rgba(163, 190, 140, 0.2);
   color: currentColor;
 }
+
+/* Header items */
+.headerTitleGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.clearBtn {
+  background: transparent;
+  border: 1px solid var(--border-bright);
+  color: var(--muted);
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-size: 9px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  font-weight: 500;
+}
+
+.clearBtn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-card-tasks);
+  border-color: var(--text-card-tasks);
+}
+
+/* Level Content wrapper */
+.levelContent {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.levelHeader {
+  padding: 12px 14px 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.levelName {
+  font-size: 13px;
+  font-weight: bold;
+  color: var(--yellow);
+  margin-bottom: 4px;
+}
+
+.levelCommand {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.levelDesc {
+  padding: 10px 14px;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--text-card-tasks);
+  opacity: 0.85;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* Levels list wrapper */
+.levelListContainer {
+  display: flex;
+  flex-direction: column;
+  padding: 14px;
+  gap: 12px;
+  overflow-y: auto;
+  height: 100%;
+}
+
+.levelListTitle {
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: bold;
+  margin-bottom: 2px;
+}
+
+.levelList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.levelCard {
+  background: rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--border-card);
+  color: var(--text-card-tasks);
+  border-radius: 6px;
+  padding: 10px 12px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.levelCard:hover {
+  background: rgba(0, 0, 0, 0.25);
+  border-color: var(--yellow);
+}
+
+.levelCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.levelCardName {
+  font-size: 11px;
+  font-weight: bold;
+  color: var(--yellow);
+}
+
+.levelCardCmd {
+  font-size: 9px;
+  color: var(--orange);
+}
+
+.levelCardCmd code {
+  background: rgba(0, 0, 0, 0.25);
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+.levelCardDesc {
+  font-size: 9.5px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+/* Empty State */
+.emptyLevels {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 10px;
+  text-align: center;
+  border: 2px dashed var(--border-dim);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.emptyIcon {
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+.emptyText {
+  font-size: 11px;
+  font-weight: bold;
+  color: var(--text-card-tasks);
+  margin-bottom: 4px;
+}
+
+.emptyHint {
+  font-size: 9px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.emptyHint code {
+  background: rgba(0, 0, 0, 0.25);
+  padding: 1px 4px;
+  border-radius: 3px;
+  color: var(--orange);
+}
