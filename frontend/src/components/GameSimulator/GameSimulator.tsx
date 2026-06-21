@@ -142,7 +142,7 @@ const GameSimulator: React.FC<GameSimulatorProps> = ({ selectedLevel, onReturnMe
         <div className={styles.loadingOverlay}>
           <p className={styles.loadingText}>⚠️ {error}</p>
           <p className={styles.loadingText} style={{ fontSize: '12px', marginTop: '8px', opacity: 0.6 }}>
-            Make sure the backend server is running on port 3001.
+            Make sure the backend server is running on port 5001.
           </p>
         </div>
       </div>
@@ -226,7 +226,7 @@ const GameSimulator: React.FC<GameSimulatorProps> = ({ selectedLevel, onReturnMe
               <button className={styles.successBtnSecondary} onClick={handleReset}>
                 เล่นอีกครั้ง (Reset)
               </button>
-              <button className={styles.successBtnPrimary} onClick={unloadLevel}>
+              <button className={styles.successBtnPrimary} onClick={onReturnMenu}>
                 เลือกด่านใหม่ (New Level)
               </button>
             </div>

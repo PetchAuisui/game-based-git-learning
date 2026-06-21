@@ -13,6 +13,10 @@ interface TasksProps {
   onUnloadLevel: () => void;
 }
 
+function getShortTaskLabel(label: string) {
+  return label.replace(/\s*\([^)]*\)\s*$/u, '').trim();
+}
+
 const Tasks: React.FC<TasksProps> = ({
   levels,
   currentLevel,
@@ -65,14 +69,14 @@ const Tasks: React.FC<TasksProps> = ({
       ) : (
         <div className={styles.levelContent}>
           <div className={styles.levelHeader}>
-            <div className={styles.levelName}>{currentLevel.levelName}</div>
-            <div className={styles.levelCommand}>เป้าหมาย: {currentLevel.command}</div>
+            <div className={styles.levelName}>Tasks</div>
+            <div className={styles.taskSummary}>
+              ทั้งหมด {currentLevel.tasks.length} tasks
+            </div>
           </div>
-          
-          <div className={styles.levelDesc}>{currentLevel.description}</div>
 
           <div className={styles.taskList}>
-            {currentLevel.tasks.map(task => {
+            {currentLevel.tasks.map((task, index) => {
               const isCompleted = completedTasks.includes(task.id);
               return (
                 <div
@@ -82,7 +86,8 @@ const Tasks: React.FC<TasksProps> = ({
                   <span className={styles.checkbox}>
                     {isCompleted ? '✓' : ''}
                   </span>
-                  <span className={styles.label}>{task.label}</span>
+                  <span className={styles.taskNumber}>{index + 1}.</span>
+                  <span className={styles.label}>{getShortTaskLabel(task.label)}</span>
                 </div>
               );
             })}

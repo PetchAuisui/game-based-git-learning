@@ -10,30 +10,30 @@
 }
 
 :root {
-  /* Default variables (matching original dark brown theme) */
-  --bg-page:       #231916;
-  --bg-header:     #1b1311;
-  --text-header:   #ffff66;
-  --border-card:   #4d3a35;
+  /* Default variables mirror dark mode so standalone routes stay themed. */
+  --bg-page:       #68819c;
+  --bg-header:     #68819c;
+  --text-header:   #211713;
+  --border-card:   #513a34;
   
-  --bg-card-tasks: #2e211d;
-  --text-card-tasks: #f5ecea;
+  --bg-card-tasks: #c7c7c7;
+  --text-card-tasks: #332520;
   
-  --bg-card-files: #2e211d;
-  --text-card-files: #f5ecea;
+  --bg-card-files: #c7c7c7;
+  --text-card-files: #332520;
   
-  --bg-workspace:  #231916;
-  --text-workspace: #f5ecea;
+  --bg-workspace:  #444c62;
+  --text-workspace: #c6d3e0;
   
-  --bg-term-header: #1b1311;
-  --text-term-header: #a58e87;
-  --border-term:    #4d3a35;
-  --bg-terminal:    #1c1311;
+  --bg-term-header: #b97759;
+  --text-term-header: #000000;
+  --border-term:    #b97759;
+  --bg-terminal:    #000000;
   --text-terminal:  #a3be8c;
 
   /* Common borders */
-  --border-dim:    #4d3a35;
-  --border-bright: #7c625a;
+  --border-dim:    #513a34;
+  --border-bright: #ad7955;
 
   /* Accents */
   --yellow:        #ffff66;
@@ -44,14 +44,14 @@
   --blue:          #85c1e9;
 
   /* Text */
-  --text:          #f5ecea;
-  --muted:         #a58e87;
-  --dim:           #705c56;
+  --text:          #332520;
+  --muted:         #6f8198;
+  --dim:           #8da1b9;
 
   /* Custom Page Text (COZY CMD) */
-  --text-main:     #f5ecea;
-  --text-muted:    #a58e87;
-  --text-dim:      #705c56;
+  --text-main:     #f3eadf;
+  --text-muted:    #d0d8df;
+  --text-dim:      #6f8198;
 
   /* Tasks completed */
   --tasks-completed-fg: #a3be8c;
@@ -69,22 +69,36 @@
   --files-modified-bg:   rgba(229, 152, 102, 0.1);
   --files-deleted-fg:    #a58e87;
   --files-deleted-bg:    rgba(165, 142, 135, 0.1);
+
+  /* Menu / Mission surfaces */
+  --menu-bg-start:        #68819c;
+  --menu-bg-end:          #444c62;
+  --menu-panel-bg:        #c7c7c7;
+  --menu-panel-border:    #513a34;
+  --menu-panel-shadow:    rgba(26, 17, 14, 0.34);
+  --menu-subtext:         #4f6075;
+  --menu-grid-dot:        rgba(255, 255, 255, 0.08);
+  --menu-glow-primary:    rgba(173, 121, 85, 0.18);
+  --menu-glow-secondary:  rgba(255, 218, 134, 0.16);
+  --menu-control-bg:      rgba(199, 199, 199, 0.92);
+  --menu-control-border:  rgba(81, 58, 52, 0.78);
+  --menu-card-hover:      #d5d5d5;
 }
 
 [data-theme="light"] {
-  --bg-page:       #f6deb7;
-  --bg-header:     #be7a5d;
-  --text-header:   #ffffff;
-  --border-card:   #46352c;
+  --bg-page:       #f6e2c4;
+  --bg-header:     #bd744b;
+  --text-header:   #f8ded2;
+  --border-card:   #604742;
   
-  --bg-card-tasks: #f5ede1;
-  --text-card-tasks: #46352c;
+  --bg-card-tasks: #f1e9dd;
+  --text-card-tasks: #352621;
   
-  --bg-card-files: #c48662;
-  --text-card-files: #ffffff;
+  --bg-card-files: #bd744b;
+  --text-card-files: #f8ded2;
   
-  --bg-workspace:  #d2c5b1;
-  --text-workspace: #46352c;
+  --bg-workspace:  #cec2b1;
+  --text-workspace: #352621;
   
   --bg-term-header: #fee898;
   --text-term-header: #000000;
@@ -93,18 +107,18 @@
   --text-terminal:  #a3be8c;
 
   /* Borders & selection */
-  --border-dim:    #46352c;
-  --border-bright: #be7a5d;
+  --border-dim:    #604742;
+  --border-bright: #bd744b;
 
   /* Text overrides */
-  --text:          #46352c;
-  --muted:         #8a7065;
-  --dim:           #a08d87;
+  --text:          #352621;
+  --muted:         #806a60;
+  --dim:           #b2a59a;
 
   /* Custom Page Text (COZY CMD) */
-  --text-main:     #46352c;
-  --text-muted:    #8a7065;
-  --text-dim:      #a08d87;
+  --text-main:     #352621;
+  --text-muted:    #806a60;
+  --text-dim:      #b2a59a;
 
   /* Tasks completed */
   --tasks-completed-fg: #2b5016;
@@ -122,22 +136,36 @@
   --files-modified-bg:   rgba(255, 255, 255, 0.15);
   --files-deleted-fg:    #e0e0e0;
   --files-deleted-bg:    rgba(255, 255, 255, 0.1);
+
+  /* Menu / Mission surfaces */
+  --menu-bg-start:        #f6e2c4;
+  --menu-bg-end:          #cec2b1;
+  --menu-panel-bg:        #f1e9dd;
+  --menu-panel-border:    #604742;
+  --menu-panel-shadow:    rgba(77, 49, 39, 0.28);
+  --menu-subtext:         #655149;
+  --menu-grid-dot:        rgba(96, 71, 66, 0.11);
+  --menu-glow-primary:    rgba(189, 116, 75, 0.20);
+  --menu-glow-secondary:  rgba(254, 232, 152, 0.36);
+  --menu-control-bg:      rgba(241, 233, 221, 0.92);
+  --menu-control-border:  rgba(96, 71, 66, 0.72);
+  --menu-card-hover:      #fff0d7;
 }
 
 [data-theme="dark"] {
-  --bg-page:       #17202b;
-  --bg-header:     #101722;
-  --text-header:   #ffffff;
-  --border-card:   #3f5a6b;
+  --bg-page:       #68819c;
+  --bg-header:     #68819c;
+  --text-header:   #211713;
+  --border-card:   #513a34;
   
-  --bg-card-tasks: #223448;
-  --text-card-tasks: #f4f8fb;
+  --bg-card-tasks: #c7c7c7;
+  --text-card-tasks: #332520;
   
-  --bg-card-files: #223448;
-  --text-card-files: #f4f8fb;
+  --bg-card-files: #c7c7c7;
+  --text-card-files: #332520;
   
-  --bg-workspace:  #111923;
-  --text-workspace: #f4f8fb;
+  --bg-workspace:  #444c62;
+  --text-workspace: #c6d3e0;
   
   --bg-term-header: #b97759;
   --text-term-header: #000000;
@@ -146,18 +174,18 @@
   --text-terminal:  #a3be8c;
 
   /* Borders & selection */
-  --border-dim:    #314658;
-  --border-bright: #6b879d;
+  --border-dim:    #513a34;
+  --border-bright: #ad7955;
 
   /* Text overrides */
-  --text:          #f4f8fb;
-  --muted:         #c3d0dc;
-  --dim:           #7f95aa;
+  --text:          #332520;
+  --muted:         #6f8198;
+  --dim:           #8da1b9;
 
   /* Custom Page Text (COZY CMD) */
-  --text-main:     #f7fbff;
-  --text-muted:    #c8d6e3;
-  --text-dim:      #7f95aa;
+  --text-main:     #f3eadf;
+  --text-muted:    #d0d8df;
+  --text-dim:      #6f8198;
 
   /* Tasks completed */
   --tasks-completed-fg: #1b5e20;
@@ -175,6 +203,20 @@
   --files-modified-bg:   rgba(230, 81, 0, 0.12);
   --files-deleted-fg:    #424242;
   --files-deleted-bg:    rgba(117, 117, 117, 0.12);
+
+  /* Menu / Mission surfaces */
+  --menu-bg-start:        #68819c;
+  --menu-bg-end:          #444c62;
+  --menu-panel-bg:        #c7c7c7;
+  --menu-panel-border:    #513a34;
+  --menu-panel-shadow:    rgba(26, 17, 14, 0.34);
+  --menu-subtext:         #4f6075;
+  --menu-grid-dot:        rgba(255, 255, 255, 0.08);
+  --menu-glow-primary:    rgba(173, 121, 85, 0.18);
+  --menu-glow-secondary:  rgba(255, 218, 134, 0.16);
+  --menu-control-bg:      rgba(199, 199, 199, 0.92);
+  --menu-control-border:  rgba(81, 58, 52, 0.78);
+  --menu-card-hover:      #d5d5d5;
 }
 
 html, body {

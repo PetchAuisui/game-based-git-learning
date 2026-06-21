@@ -8,10 +8,10 @@
   height: 100vh;
   width: 100vw;
   background:
-    radial-gradient(circle at 18% 12%, rgba(86,211,100,0.12), transparent 28%),
-    radial-gradient(circle at 92% 18%, rgba(255,166,87,0.10), transparent 26%),
-    linear-gradient(145deg, #111923 0%, var(--bg-page) 48%, #243346 100%);
-  color: var(--text-main);
+    radial-gradient(circle at 18% 12%, var(--menu-glow-primary), transparent 28%),
+    radial-gradient(circle at 92% 18%, var(--menu-glow-secondary), transparent 26%),
+    linear-gradient(145deg, var(--menu-bg-start) 0%, var(--bg-page) 48%, var(--menu-bg-end) 100%);
+  color: var(--text-card-tasks);
   font-family: 'Space Grotesk', 'Fira Code', monospace;
   overflow: hidden;
 }
@@ -24,7 +24,7 @@
   transform: translateX(-50%);
   width: 80%;
   height: 300px;
-  background: radial-gradient(ellipse, rgba(86,211,100,0.12) 0%, transparent 70%);
+  background: radial-gradient(ellipse, var(--menu-glow-primary) 0%, transparent 70%);
   pointer-events: none !important;
   user-select: none;
   z-index: 0;
@@ -34,7 +34,7 @@
   position: absolute;
   inset: 0;
   z-index: 0;
-  background-image: radial-gradient(circle, rgba(255,255,255,0.055) 1px, transparent 1px);
+  background-image: radial-gradient(circle, var(--menu-grid-dot) 1px, transparent 1px);
   background-size: 28px 28px;
   pointer-events: none !important;
   user-select: none;
@@ -49,8 +49,8 @@
   gap: 20px;
   padding: 0 28px;
   height: 64px;
-  background: rgba(12,18,27,0.92);
-  border-bottom: 1px solid rgba(200,214,227,0.14);
+  background: var(--bg-header);
+  border-bottom: 3px solid var(--menu-panel-border);
   backdrop-filter: blur(8px);
   flex-shrink: 0;
   animation: fadeInDown 0.4s ease-out both;
@@ -60,9 +60,9 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(200,214,227,0.20);
-  color: var(--text-muted);
+  background: var(--menu-control-bg);
+  border: 1px solid var(--menu-control-border);
+  color: var(--text-card-tasks);
   border-radius: 8px;
   padding: 7px 14px;
   font-size: 12px;
@@ -74,9 +74,9 @@
 }
 
 .backBtn:hover {
-  background: rgba(121,192,255,0.11);
-  border-color: var(--blue);
-  color: var(--blue);
+  background: var(--menu-card-hover);
+  border-color: var(--menu-panel-border);
+  color: var(--text-card-tasks);
 }
 
 .backArrow {
@@ -98,7 +98,7 @@
 .headerTag {
   font-family: 'Fira Code', monospace;
   font-size: 9px;
-  color: var(--green);
+  color: var(--text-header);
   letter-spacing: 0.1em;
   opacity: 0.9;
   margin-bottom: 1px;
@@ -108,7 +108,7 @@
   font-family: 'Space Grotesk', sans-serif;
   font-size: 16px;
   font-weight: 700;
-  color: var(--text-main);
+  color: var(--text-header);
   letter-spacing: -0.01em;
 }
 
@@ -120,8 +120,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: rgba(255,255,255,0.07);
-  border: 1px solid rgba(200,214,227,0.20);
+  background: var(--menu-control-bg);
+  border: 1px solid var(--menu-control-border);
   border-radius: 8px;
   padding: 6px 16px;
 }
@@ -136,7 +136,7 @@
 
 .statLabel {
   font-size: 9px;
-  color: var(--text-muted);
+  color: var(--text-card-tasks);
   letter-spacing: 0.08em;
 }
 
@@ -152,7 +152,7 @@
 
 .intro {
   font-size: 12.5px;
-  color: #d7e3ed;
+  color: var(--menu-subtext);
   margin-bottom: 24px;
   line-height: 1.5;
 }
@@ -167,9 +167,8 @@
 /* ── Level card ── */
 .card {
   position: relative;
-  background:
-    linear-gradient(180deg, rgba(39,59,78,0.92) 0%, rgba(27,40,54,0.94) 100%);
-  border: 1px solid rgba(200,214,227,0.17);
+  background: var(--menu-panel-bg);
+  border: 2px solid var(--menu-panel-border);
   border-radius: 14px;
   padding: 22px;
   cursor: pointer;
@@ -188,10 +187,9 @@
 
 .card:hover {
   border-color: var(--card-color, #56d364);
-  background:
-    linear-gradient(180deg, rgba(48,70,91,0.97) 0%, rgba(31,48,64,0.98) 100%);
+  background: var(--menu-card-hover);
   transform: translateY(-3px);
-  box-shadow: 0 16px 38px rgba(0,0,0,0.42), 0 0 0 1px var(--card-color, #56d364) inset;
+  box-shadow: 0 12px 28px var(--menu-panel-shadow), 0 0 0 1px var(--card-color, #56d364) inset;
 }
 
 /* Card glow (shown on hover) */
@@ -224,7 +222,7 @@
   font-family: 'Fira Code', monospace;
   font-size: 11px;
   font-weight: 700;
-  color: #9db0bf;
+  color: var(--text-dim);
   letter-spacing: 0.05em;
   flex-shrink: 0;
 }
@@ -249,7 +247,7 @@
   font-family: 'Space Grotesk', sans-serif;
   font-size: 15px;
   font-weight: 700;
-  color: var(--text-main);
+  color: var(--text-card-tasks);
   line-height: 1.3;
   letter-spacing: -0.01em;
 }
@@ -257,7 +255,7 @@
 /* ── Card description ── */
 .cardDesc {
   font-size: 11.5px;
-  color: #c9d7e2;
+  color: var(--menu-subtext);
   line-height: 1.65;
   flex: 1;
 }
@@ -269,7 +267,7 @@
   justify-content: space-between;
   gap: 10px;
   padding-top: 12px;
-  border-top: 1px solid rgba(200,214,227,0.12);
+  border-top: 1px solid var(--menu-control-border);
   margin-top: 2px;
 }
 
@@ -285,7 +283,7 @@
   align-items: center;
   gap: 4px;
   font-size: 10px;
-  color: var(--text-muted);
+  color: var(--menu-subtext);
   font-family: 'Fira Code', monospace;
 }
 
