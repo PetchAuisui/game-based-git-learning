@@ -48,6 +48,11 @@
   --muted:         #a58e87;
   --dim:           #705c56;
 
+  /* Custom Page Text (COZY CMD) */
+  --text-main:     #f5ecea;
+  --text-muted:    #a58e87;
+  --text-dim:      #705c56;
+
   /* Tasks completed */
   --tasks-completed-fg: #a3be8c;
 
@@ -96,6 +101,11 @@
   --muted:         #8a7065;
   --dim:           #a08d87;
 
+  /* Custom Page Text (COZY CMD) */
+  --text-main:     #46352c;
+  --text-muted:    #8a7065;
+  --text-dim:      #a08d87;
+
   /* Tasks completed */
   --tasks-completed-fg: #2b5016;
 
@@ -115,19 +125,19 @@
 }
 
 [data-theme="dark"] {
-  --bg-page:       #526882;
-  --bg-header:     #455a73;
+  --bg-page:       #17202b;
+  --bg-header:     #101722;
   --text-header:   #ffffff;
-  --border-card:   #303e4d;
+  --border-card:   #3f5a6b;
   
-  --bg-card-tasks: #c0c7cf;
-  --text-card-tasks: #354252;
+  --bg-card-tasks: #223448;
+  --text-card-tasks: #f4f8fb;
   
-  --bg-card-files: #c0c7cf;
-  --text-card-files: #354252;
+  --bg-card-files: #223448;
+  --text-card-files: #f4f8fb;
   
-  --bg-workspace:  #3a485a;
-  --text-workspace: #ffffff;
+  --bg-workspace:  #111923;
+  --text-workspace: #f4f8fb;
   
   --bg-term-header: #b97759;
   --text-term-header: #000000;
@@ -136,13 +146,18 @@
   --text-terminal:  #a3be8c;
 
   /* Borders & selection */
-  --border-dim:    #303e4d;
-  --border-bright: #455a73;
+  --border-dim:    #314658;
+  --border-bright: #6b879d;
 
   /* Text overrides */
-  --text:          #354252;
-  --muted:         #5c6e82;
-  --dim:           #7b8c9d;
+  --text:          #f4f8fb;
+  --muted:         #c3d0dc;
+  --dim:           #7f95aa;
+
+  /* Custom Page Text (COZY CMD) */
+  --text-main:     #f7fbff;
+  --text-muted:    #c8d6e3;
+  --text-dim:      #7f95aa;
 
   /* Tasks completed */
   --tasks-completed-fg: #1b5e20;
@@ -167,7 +182,7 @@ html, body {
   width: 100%;
   font-family: 'Fira Code', 'Courier New', monospace;
   background-color: var(--bg-page);
-  color: var(--text);
+  color: var(--text-main);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow: hidden;
@@ -203,4 +218,19 @@ html, body {
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50%       { opacity: 0.5; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
 }
