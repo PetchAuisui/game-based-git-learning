@@ -134,6 +134,14 @@
 
 /* ── Terminal preview ────────────────────────── */
 .term {
+  /* Enforce bright accents on black terminal background */
+  --yellow:        #ffff66;
+  --green:         #a3be8c;
+  --orange:        #e59866;
+  --coral:         #ec7063;
+  --purple:        #bb8fce;
+  --blue:          #85c1e9;
+
   width: 100%;
   background: var(--bg-terminal);
   border: 3px solid var(--border-term);

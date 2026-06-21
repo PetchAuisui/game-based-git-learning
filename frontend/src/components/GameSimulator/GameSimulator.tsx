@@ -149,6 +149,9 @@ const GameSimulator: React.FC<GameSimulatorProps> = ({ selectedLevel, onReturnMe
     );
   }
 
+  const levelIndex = levels.findIndex(l => l.levelId === currentLevel?.levelId);
+  const levelNumber = levelIndex !== -1 ? levelIndex + 1 : null;
+
   return (
     <div className={styles.gameWrapper}>
       <HUD
@@ -158,6 +161,7 @@ const GameSimulator: React.FC<GameSimulatorProps> = ({ selectedLevel, onReturnMe
         theme={theme}
         onToggleTheme={toggleTheme}
         onReturnMenu={onReturnMenu}
+        levelNumber={levelNumber}
       />
 
       <div className={styles.mainContent}>

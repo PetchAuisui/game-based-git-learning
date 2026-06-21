@@ -1,5 +1,13 @@
 /* src/components/Terminal/Terminal.module.css */
 .container {
+  /* Enforce bright terminal accents regardless of light/dark theme */
+  --yellow:        #ffff66;
+  --green:         #a3be8c;
+  --orange:        #e59866;
+  --coral:         #ec7063;
+  --purple:        #bb8fce;
+  --blue:          #85c1e9;
+
   background: var(--bg-terminal);
   color: var(--text-terminal);
   height: 100%;

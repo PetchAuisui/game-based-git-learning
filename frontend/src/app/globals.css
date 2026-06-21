@@ -11,29 +11,29 @@
 
 :root {
   /* Default variables mirror dark mode so standalone routes stay themed. */
-  --bg-page:       #68819c;
-  --bg-header:     #68819c;
-  --text-header:   #211713;
-  --border-card:   #513a34;
+  --bg-page:       #1e2530;
+  --bg-header:     #151b24;
+  --text-header:   #f3eadf;
+  --border-card:   #384556;
   
-  --bg-card-tasks: #c7c7c7;
-  --text-card-tasks: #332520;
+  --bg-card-tasks: #252e3b;
+  --text-card-tasks: #f3eadf;
   
-  --bg-card-files: #c7c7c7;
-  --text-card-files: #332520;
+  --bg-card-files: #252e3b;
+  --text-card-files: #f3eadf;
   
-  --bg-workspace:  #444c62;
+  --bg-workspace:  #3b485c;
   --text-workspace: #c6d3e0;
   
-  --bg-term-header: #b97759;
-  --text-term-header: #000000;
-  --border-term:    #b97759;
+  --bg-term-header: #4b3c37;
+  --text-term-header: #f3eadf;
+  --border-term:    #4b3c37;
   --bg-terminal:    #000000;
   --text-terminal:  #a3be8c;
 
   /* Common borders */
-  --border-dim:    #513a34;
-  --border-bright: #ad7955;
+  --border-dim:    #384556;
+  --border-bright: #566b85;
 
   /* Accents */
   --yellow:        #ffff66;
@@ -43,22 +43,41 @@
   --purple:        #bb8fce;
   --blue:          #85c1e9;
 
+  /* Git Command Colors (Themed) */
+  --cmd-init:     #56d364;
+  --cmd-add:      #79c0ff;
+  --cmd-commit:   #d2a8ff;
+  --cmd-branch:   #ffa657;
+  --cmd-merge:    #ff7b72;
+  --cmd-push:     #f0e68c;
+  --cmd-pull:     #39d5d5;
+  --cmd-checkout: #ffa657;
+  --cmd-rebase:   #ff7b72;
+  --cmd-default:  #8b949e;
+
+  /* Level Difficulty Colors (Themed) */
+  --diff-beginner:     #56d364;
+  --diff-easy:         #79c0ff;
+  --diff-intermediate: #ffa657;
+  --diff-advanced:     #ff7b72;
+  --diff-expert:       #d2a8ff;
+
   /* Text */
-  --text:          #332520;
-  --muted:         #6f8198;
-  --dim:           #8da1b9;
+  --text:          #f3eadf;
+  --muted:         #8da1b9;
+  --dim:           #566b85;
 
   /* Custom Page Text (COZY CMD) */
   --text-main:     #f3eadf;
   --text-muted:    #d0d8df;
-  --text-dim:      #6f8198;
+  --text-dim:      #8da1b9;
 
   /* Tasks completed */
   --tasks-completed-fg: #a3be8c;
 
   /* Files Card Specifics */
-  --files-muted:         #a58e87;
-  --files-dim:           #705c56;
+  --files-muted:         #8da1b9;
+  --files-dim:           #566b85;
   --files-untracked-fg:  #ec7063;
   --files-untracked-bg:  rgba(236, 112, 99, 0.1);
   --files-staged-fg:     #a3be8c;
@@ -67,22 +86,22 @@
   --files-committed-bg:  rgba(255, 255, 102, 0.08);
   --files-modified-fg:   #e59866;
   --files-modified-bg:   rgba(229, 152, 102, 0.1);
-  --files-deleted-fg:    #a58e87;
-  --files-deleted-bg:    rgba(165, 142, 135, 0.1);
+  --files-deleted-fg:    #566b85;
+  --files-deleted-bg:    rgba(86, 107, 133, 0.1);
 
   /* Menu / Mission surfaces */
-  --menu-bg-start:        #68819c;
-  --menu-bg-end:          #444c62;
-  --menu-panel-bg:        #c7c7c7;
-  --menu-panel-border:    #513a34;
-  --menu-panel-shadow:    rgba(26, 17, 14, 0.34);
-  --menu-subtext:         #4f6075;
-  --menu-grid-dot:        rgba(255, 255, 255, 0.08);
-  --menu-glow-primary:    rgba(173, 121, 85, 0.18);
-  --menu-glow-secondary:  rgba(255, 218, 134, 0.16);
-  --menu-control-bg:      rgba(199, 199, 199, 0.92);
-  --menu-control-border:  rgba(81, 58, 52, 0.78);
-  --menu-card-hover:      #d5d5d5;
+  --menu-bg-start:        #1e2530;
+  --menu-bg-end:          #131922;
+  --menu-panel-bg:        #252e3b;
+  --menu-panel-border:    #384556;
+  --menu-panel-shadow:    rgba(0, 0, 0, 0.45);
+  --menu-subtext:         #8da1b9;
+  --menu-grid-dot:        rgba(255, 255, 255, 0.05);
+  --menu-glow-primary:    rgba(86, 211, 100, 0.08);
+  --menu-glow-secondary:  rgba(255, 255, 102, 0.05);
+  --menu-control-bg:      rgba(37, 46, 59, 0.92);
+  --menu-control-border:  rgba(56, 69, 86, 0.78);
+  --menu-card-hover:      #2f3a4a;
 }
 
 [data-theme="light"] {
@@ -109,6 +128,33 @@
   /* Borders & selection */
   --border-dim:    #604742;
   --border-bright: #bd744b;
+
+  /* Accent overrides for high readability on light backgrounds */
+  --yellow:        #a27000;
+  --green:         #2a7b3e;
+  --orange:        #b74f17;
+  --coral:         #c53030;
+  --purple:        #6b46c1;
+  --blue:          #1565c0;
+
+  /* Git Command Colors (High Contrast Light Theme) */
+  --cmd-init:     #2e7d32;
+  --cmd-add:      #1565c0;
+  --cmd-commit:   #6b46c1;
+  --cmd-branch:   #b74f17;
+  --cmd-merge:    #c53030;
+  --cmd-push:     #a27000;
+  --cmd-pull:     #00838f;
+  --cmd-checkout: #b74f17;
+  --cmd-rebase:   #c53030;
+  --cmd-default:  #5c6e82;
+
+  /* Level Difficulty Colors (High Contrast Light Theme) */
+  --diff-beginner:     #2e7d32;
+  --diff-easy:         #1565c0;
+  --diff-intermediate: #b74f17;
+  --diff-advanced:     #c53030;
+  --diff-expert:       #6b46c1;
 
   /* Text overrides */
   --text:          #352621;
@@ -153,70 +199,70 @@
 }
 
 [data-theme="dark"] {
-  --bg-page:       #68819c;
-  --bg-header:     #68819c;
-  --text-header:   #211713;
-  --border-card:   #513a34;
+  --bg-page:       #1e2530;
+  --bg-header:     #151b24;
+  --text-header:   #f3eadf;
+  --border-card:   #384556;
   
-  --bg-card-tasks: #c7c7c7;
-  --text-card-tasks: #332520;
+  --bg-card-tasks: #252e3b;
+  --text-card-tasks: #f3eadf;
   
-  --bg-card-files: #c7c7c7;
-  --text-card-files: #332520;
+  --bg-card-files: #252e3b;
+  --text-card-files: #f3eadf;
   
-  --bg-workspace:  #444c62;
+  --bg-workspace:  #3b485c;
   --text-workspace: #c6d3e0;
   
-  --bg-term-header: #b97759;
-  --text-term-header: #000000;
-  --border-term:    #b97759;
+  --bg-term-header: #4b3c37;
+  --text-term-header: #f3eadf;
+  --border-term:    #4b3c37;
   --bg-terminal:    #000000;
   --text-terminal:  #a3be8c;
 
   /* Borders & selection */
-  --border-dim:    #513a34;
-  --border-bright: #ad7955;
+  --border-dim:    #384556;
+  --border-bright: #566b85;
 
   /* Text overrides */
-  --text:          #332520;
-  --muted:         #6f8198;
-  --dim:           #8da1b9;
+  --text:          #f3eadf;
+  --muted:         #8da1b9;
+  --dim:           #566b85;
 
   /* Custom Page Text (COZY CMD) */
   --text-main:     #f3eadf;
   --text-muted:    #d0d8df;
-  --text-dim:      #6f8198;
+  --text-dim:      #8da1b9;
 
   /* Tasks completed */
-  --tasks-completed-fg: #1b5e20;
+  --tasks-completed-fg: #a3be8c;
 
   /* Files Card Specifics */
-  --files-muted:         #5c6e82;
-  --files-dim:           #7b8c9d;
-  --files-untracked-fg:  #b71c1c;
-  --files-untracked-bg:  rgba(198, 40, 40, 0.12);
-  --files-staged-fg:     #1b5e20;
-  --files-staged-bg:     rgba(46, 125, 50, 0.15);
-  --files-committed-fg:  #354252;
-  --files-committed-bg:  rgba(53, 66, 82, 0.12);
-  --files-modified-fg:   #e65100;
-  --files-modified-bg:   rgba(230, 81, 0, 0.12);
-  --files-deleted-fg:    #424242;
-  --files-deleted-bg:    rgba(117, 117, 117, 0.12);
+  --files-muted:         #8da1b9;
+  --files-dim:           #566b85;
+  --files-untracked-fg:  #ec7063;
+  --files-untracked-bg:  rgba(236, 112, 99, 0.1);
+  --files-staged-fg:     #a3be8c;
+  --files-staged-bg:     rgba(163, 190, 140, 0.1);
+  --files-committed-fg:  #ffff66;
+  --files-committed-bg:  rgba(255, 255, 102, 0.08);
+  --files-modified-fg:   #e59866;
+  --files-modified-bg:   rgba(229, 152, 102, 0.1);
+  --files-deleted-fg:    #566b85;
+  --files-deleted-bg:    rgba(86, 107, 133, 0.1);
 
   /* Menu / Mission surfaces */
-  --menu-bg-start:        #68819c;
-  --menu-bg-end:          #444c62;
-  --menu-panel-bg:        #c7c7c7;
-  --menu-panel-border:    #513a34;
-  --menu-panel-shadow:    rgba(26, 17, 14, 0.34);
-  --menu-subtext:         #4f6075;
-  --menu-grid-dot:        rgba(255, 255, 255, 0.08);
-  --menu-glow-primary:    rgba(173, 121, 85, 0.18);
-  --menu-glow-secondary:  rgba(255, 218, 134, 0.16);
-  --menu-control-bg:      rgba(199, 199, 199, 0.92);
-  --menu-control-border:  rgba(81, 58, 52, 0.78);
-  --menu-card-hover:      #d5d5d5;
+  --menu-bg-start:        #1e2530;
+  --menu-bg-end:          #131922;
+  --menu-panel-bg:        #252e3b;
+  --menu-panel-border:    #384556;
+  --menu-panel-shadow:    rgba(0, 0, 0, 0.45);
+  --menu-subtext:         #8da1b9;
+  --menu-grid-dot:        rgba(255, 255, 255, 0.05);
+  --menu-glow-primary:    rgba(86, 211, 100, 0.08);
+  --menu-glow-secondary:  rgba(255, 255, 102, 0.05);
+  --menu-control-bg:      rgba(37, 46, 59, 0.92);
+  --menu-control-border:  rgba(56, 69, 86, 0.78);
+  --menu-card-hover:      #2f3a4a;
 }
 
 html, body {

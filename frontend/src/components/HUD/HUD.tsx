@@ -11,9 +11,18 @@ interface HUDProps {
   theme: 'light' | 'dark';
   onToggleTheme: () => void;
   onReturnMenu?: () => void;
+  levelNumber?: number | null;
 }
 
-const HUD: React.FC<HUDProps> = ({ score, timerStart, onReset, theme, onToggleTheme, onReturnMenu }) => {
+const HUD: React.FC<HUDProps> = ({
+  score,
+  timerStart,
+  onReset,
+  theme,
+  onToggleTheme,
+  onReturnMenu,
+  levelNumber,
+}) => {
   const [elapsed, setElapsed] = useState(0);
 
   useEffect(() => {
@@ -37,8 +46,12 @@ const HUD: React.FC<HUDProps> = ({ score, timerStart, onReset, theme, onToggleTh
             ← BACK
           </button>
         )}
-        <span className={styles.brandName}>COZY_CMD.EXE</span>
-        <span className={styles.lvlBadge}>LVL 14</span>
+        <span className={styles.brandName}>
+          <span style={{ color: 'var(--green)' }}>GIT</span> SANDBOX
+        </span>
+        <span className={styles.lvlBadge}>
+          {levelNumber !== undefined && levelNumber !== null ? `LVL ${levelNumber}` : 'SANDBOX'}
+        </span>
       </div>
 
       <div className={styles.controls}>

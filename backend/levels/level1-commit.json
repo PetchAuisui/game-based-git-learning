@@ -5,12 +5,7 @@
   "description": "ในด่านนี้ คุณจะได้เรียนรู้วิธีการเริ่มต้น Git repository, การบันทึกการเปลี่ยนแปลงของไฟล์ และการ Commit เพื่อบันทึกประวัติการพัฒนา",
   "initialState": {
     "isInitialized": false,
-    "files": [
-      {
-        "path": "index.html",
-        "content": "<!DOCTYPE html>\n<html>\n<head><title>My Game</title></head>\n<body>\n  <h1>Welcome to Git Game!</h1>\n</body>\n</html>"
-      }
-    ],
+    "files": [],
     "commands": []
   },
   "tasks": [
@@ -18,22 +13,6 @@
       "id": "task-init",
       "label": "เริ่มต้นใช้งาน Git ด้วยคำสั่ง git init",
       "check": { "type": "git_initialized" }
-    },
-    {
-      "id": "task-add",
-      "label": "เพิ่มไฟล์ index.html เข้าสู่ Staging Area (git add index.html)",
-      "check": {
-        "type": "file_staged",
-        "params": { "path": "index.html" }
-      }
-    },
-    {
-      "id": "task-commit",
-      "label": "สร้าง Commit ครั้งแรกด้วยข้อความที่เหมาะสม (git commit -m \"...\")",
-      "check": {
-        "type": "commit_count_min",
-        "params": { "count": 1 }
-      }
     }
   ]
 }

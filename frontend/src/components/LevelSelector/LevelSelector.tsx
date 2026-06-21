@@ -12,30 +12,30 @@ interface LevelSelectorProps {
 }
 
 const commandColors: Record<string, string> = {
-  'git init':     '#56d364',
-  'git add':      '#79c0ff',
-  'git commit':   '#d2a8ff',
-  'git branch':   '#ffa657',
-  'git merge':    '#ff7b72',
-  'git push':     '#f0e68c',
-  'git pull':     '#39d5d5',
-  'git checkout': '#ffa657',
-  'git rebase':   '#ff7b72',
+  'git init':     'var(--cmd-init)',
+  'git add':      'var(--cmd-add)',
+  'git commit':   'var(--cmd-commit)',
+  'git branch':   'var(--cmd-branch)',
+  'git merge':    'var(--cmd-merge)',
+  'git push':     'var(--cmd-push)',
+  'git pull':     'var(--cmd-pull)',
+  'git checkout': 'var(--cmd-checkout)',
+  'git rebase':   'var(--cmd-rebase)',
 };
 
 function getCommandColor(cmd: string): string {
   for (const [key, color] of Object.entries(commandColors)) {
     if (cmd.toLowerCase().startsWith(key)) return color;
   }
-  return '#8b949e';
+  return 'var(--cmd-default)';
 }
 
 const difficultyMap: Record<number, { label: string; color: string }> = {
-  1: { label: 'Beginner',     color: '#56d364' },
-  2: { label: 'Easy',         color: '#79c0ff' },
-  3: { label: 'Intermediate', color: '#ffa657' },
-  4: { label: 'Advanced',     color: '#ff7b72' },
-  5: { label: 'Expert',       color: '#d2a8ff' },
+  1: { label: 'Beginner',     color: 'var(--diff-beginner)' },
+  2: { label: 'Easy',         color: 'var(--diff-easy)' },
+  3: { label: 'Intermediate', color: 'var(--diff-intermediate)' },
+  4: { label: 'Advanced',     color: 'var(--diff-advanced)' },
+  5: { label: 'Expert',       color: 'var(--diff-expert)' },
 };
 
 function getDifficulty(tasks: number) {
@@ -110,7 +110,7 @@ const LevelSelector: React.FC<LevelSelectorProps> = ({
                       <div className={styles.levelNumBadge}>
                         {String(idx + 1).padStart(2, '0')}
                       </div>
-                      <div className={styles.cmdBadge} style={{ color: cmdColor, borderColor: `${cmdColor}44`, background: `${cmdColor}12` }}>
+                       <div className={styles.cmdBadge}>
                         <code>{lvl.command}</code>
                       </div>
                     </div>
@@ -130,7 +130,7 @@ const LevelSelector: React.FC<LevelSelectorProps> = ({
                         </span>
                         <span
                           className={styles.diffBadge}
-                          style={{ color: diff.color, borderColor: `${diff.color}50`, background: `${diff.color}10` }}
+                          style={{ '--diff-color': diff.color } as React.CSSProperties}
                         >
                           {diff.label}
                         </span>
@@ -144,7 +144,7 @@ const LevelSelector: React.FC<LevelSelectorProps> = ({
                     {/* Task preview dots */}
                     <div className={styles.taskDots}>
                       {lvl.tasks.map((_, i) => (
-                        <span key={i} className={styles.taskDot} style={{ background: cmdColor, opacity: 0.35 + (i / lvl.tasks.length) * 0.65 }} />
+                        <span key={i} className={styles.taskDot} style={{ opacity: 0.35 + (i / lvl.tasks.length) * 0.65 }} />
                       ))}
                     </div>
                   </div>

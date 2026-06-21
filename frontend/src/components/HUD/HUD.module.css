@@ -1,5 +1,13 @@
 /* src/components/HUD/HUD.module.css */
 .hud {
+  /* Enforce bright accents inside HUD since background is always dark (brown/gray-blue) */
+  --yellow:        #fee898;
+  --green:         #a3be8c;
+  --orange:        #e59866;
+  --coral:         #ec7063;
+  --purple:        #bb8fce;
+  --blue:          #85c1e9;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
