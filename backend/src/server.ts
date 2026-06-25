@@ -115,7 +115,7 @@ app.get('/api/levels', async (req: Request, res: Response) => {
       }
     }
     
-    levels.sort((a, b) => a.levelId.localeCompare(b.levelId));
+    levels.sort((a, b) => a.levelId.localeCompare(b.levelId, undefined, { numeric: true, sensitivity: 'base' }));
     res.json(levels);
   } catch (error) {
     res.status(500).json({ 

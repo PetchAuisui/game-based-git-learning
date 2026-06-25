@@ -10,7 +10,6 @@ interface TasksProps {
   currentLevel: LevelConfig | null;
   completedTasks: string[];
   onLoadLevel: (config: LevelConfig) => Promise<void>;
-  onUnloadLevel: () => void;
 }
 
 function getShortTaskLabel(label: string) {
@@ -21,8 +20,7 @@ const Tasks: React.FC<TasksProps> = ({
   levels,
   currentLevel,
   completedTasks,
-  onLoadLevel,
-  onUnloadLevel
+  onLoadLevel
 }) => {
   return (
     <div className={styles.container}>
@@ -31,11 +29,6 @@ const Tasks: React.FC<TasksProps> = ({
           <span className={styles.headerIcon}>≈</span>
           <span className={styles.headerTitle}>Tasks</span>
         </div>
-        {currentLevel && (
-          <button className={styles.clearBtn} onClick={onUnloadLevel} title="Unload level">
-            Clear Level
-          </button>
-        )}
       </div>
 
       {!currentLevel ? (

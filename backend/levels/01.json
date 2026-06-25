@@ -1,8 +1,9 @@
 {
-  "levelId": "level1-commit",
-  "levelName": "ด่าน 1: การ Commit ครั้งแรก",
+  "levelId": "01",
+  "levelName": "ด่าน 1: การเริ่มต้นใช้ git ครั้งแรก",
   "command": "git commit",
   "description": "ในด่านนี้ คุณจะได้เรียนรู้วิธีการเริ่มต้น Git repository, การบันทึกการเปลี่ยนแปลงของไฟล์ และการ Commit เพื่อบันทึกประวัติการพัฒนา",
+  "completionMessage": "คุณได้เรียนรู้และเข้าใจการเริ่มต้นใช้งาน Git ด้วยคำสั่ง git init เป็นที่เรียบร้อยแล้ว",
   "initialState": {
     "isInitialized": false,
     "files": [],

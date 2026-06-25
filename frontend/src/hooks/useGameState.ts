@@ -104,6 +104,7 @@ export interface LevelConfig {
   levelName: string;
   command: string;
   description: string;
+  completionMessage?: string;
   initialState: {
     isInitialized: boolean;
     files?: Array<{ path: string; content: string }>;

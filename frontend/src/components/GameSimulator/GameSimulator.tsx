@@ -173,7 +173,6 @@ const GameSimulator: React.FC<GameSimulatorProps> = ({ selectedLevel, onReturnMe
               currentLevel={currentLevel}
               completedTasks={completedTasks}
               onLoadLevel={loadLevel}
-              onUnloadLevel={unloadLevel}
             />
           </div>
           <div className={styles.filesCard}>
@@ -223,9 +222,15 @@ const GameSimulator: React.FC<GameSimulatorProps> = ({ selectedLevel, onReturnMe
             <div className={styles.successIcon}>🎉</div>
             <h2 className={styles.successTitle}>ยินดีด้วย! คุณผ่านด่านแล้ว</h2>
             <div className={styles.successLevelName}>{currentLevel.levelName}</div>
-            <p className={styles.successDesc}>
-              คุณได้เรียนรู้และเข้าใจการใช้งานคำสั่ง <code>{currentLevel.command}</code> เป็นที่เรียบร้อยแล้ว
-            </p>
+            {currentLevel.completionMessage ? (
+              <p className={styles.successDesc}>
+                {currentLevel.completionMessage}
+              </p>
+            ) : (
+              <p className={styles.successDesc}>
+                คุณได้เรียนรู้และเข้าใจการใช้งานคำสั่ง <code>{currentLevel.command}</code> เป็นที่เรียบร้อยแล้ว
+              </p>
+            )}
             <div className={styles.successActions}>
               <button className={styles.successBtnSecondary} onClick={handleReset}>
                 เล่นอีกครั้ง (Reset)

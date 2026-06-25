@@ -108,25 +108,6 @@
   gap: 8px;
 }
 
-.clearBtn {
-  background: transparent;
-  border: 1px solid var(--border-bright);
-  color: var(--muted);
-  border-radius: 4px;
-  padding: 3px 8px;
-  font-size: 9px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-family: inherit;
-  font-weight: 500;
-}
-
-.clearBtn:hover {
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text-card-tasks);
-  border-color: var(--text-card-tasks);
-}
-
 /* Level Content wrapper */
 .levelContent {
   display: flex;
