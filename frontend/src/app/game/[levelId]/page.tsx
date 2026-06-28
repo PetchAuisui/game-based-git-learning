@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import api from '@/utils/api';
 import GameSimulator from '@/components/GameSimulator/GameSimulator';
 import { LevelConfig } from '@/hooks/useGameState';
 import styles from '../../page.module.css';
@@ -18,13 +19,11 @@ export default function GameLevelPage() {
   useEffect(() => {
     if (!levelId) return;
 
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
-    fetch(`${API_URL}/api/levels`)
-      .then(res => res.json())
-      .then(data => {
-        if (!Array.isArray(data)) return;
+    api.get('/levels')
+      .then(res => {
+        if (!Array.isArray(res.data)) return;
 
-        const level = data.find((item: LevelConfig) => item.levelId === levelId);
+        const level = res.data.find((item: LevelConfig) => item.levelId === levelId);
         if (level) {
           setSelectedLevel(level);
           setNotFound(false);
