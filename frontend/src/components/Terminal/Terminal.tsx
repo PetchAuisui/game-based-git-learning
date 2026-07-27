@@ -7,9 +7,10 @@ import styles from './Terminal.module.css';
 interface TerminalProps {
   onCommand: (cmd: string) => void;
   history: React.ReactNode[];
+  currentBranch?: string;
 }
 
-const Terminal: React.FC<TerminalProps> = ({ onCommand, history }) => {
+const Terminal: React.FC<TerminalProps> = ({ onCommand, history, currentBranch }) => {
   const [input, setInput] = useState('');
   const [cmdHistory, setCmdHistory] = useState<string[]>([]);
   const [historyIdx, setHistoryIdx] = useState(-1);
@@ -67,7 +68,7 @@ const Terminal: React.FC<TerminalProps> = ({ onCommand, history }) => {
 
           {history.map((line, i) => {
             const isStr = typeof line === 'string';
-            const isCmd = isStr && (line as string).startsWith('~/project $');
+            const isCmd = isStr && (line as string).startsWith('~/project');
             const isError = isStr && (
               (line as string).startsWith('Error:') ||
               (line as string).startsWith('fatal:') ||
@@ -88,7 +89,7 @@ const Terminal: React.FC<TerminalProps> = ({ onCommand, history }) => {
         </div>
 
         <form onSubmit={handleSubmit} className={styles.inputArea}>
-          <span className={styles.prompt}>~/project $</span>
+          <span className={styles.prompt}>~/project {currentBranch && currentBranch !== 'detached' ? `(${currentBranch}) ` : ''}$</span>
           <input
             ref={inputRef}
             type="text"

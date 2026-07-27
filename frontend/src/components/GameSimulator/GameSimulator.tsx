@@ -20,6 +20,7 @@ const GameSimulator: React.FC<GameSimulatorProps> = ({ onReturnMenu }) => {
   const {
     files,
     gitGraph,
+    currentBranch,
     isInitialized,
     score,
     timerStart,
@@ -58,7 +59,8 @@ const GameSimulator: React.FC<GameSimulatorProps> = ({ onReturnMenu }) => {
     if (isExecuting) return;
 
     // Add command to history immediately
-    setHistory(prev => [...prev, `~/project $ ${cmd}`]);
+    const promptStr = currentBranch && currentBranch !== 'detached' ? `~/project (${currentBranch}) $ ` : `~/project $ `;
+    setHistory(prev => [...prev, `${promptStr}${cmd}`]);
 
     // Handle clear locally
     if (cmd.trim() === 'clear') {
@@ -151,6 +153,7 @@ const GameSimulator: React.FC<GameSimulatorProps> = ({ onReturnMenu }) => {
             <Terminal
               onCommand={handleCommand}
               history={history}
+              currentBranch={currentBranch}
             />
           </div>
         </div>

@@ -51,11 +51,18 @@ export class GitEngine {
       if (existsSync(this.stateFilePath)) {
         const stateStr = readFileSync(this.stateFilePath, 'utf8');
         const state = JSON.parse(stateStr);
-        this.memfs.fromJSON(state.fs);
+        
+        // Use custom deserializer to handle base64 binary encoding
+        if (state.fsData) {
+          this.deserializeFs(state.fsData);
+        } else if (state.fs) {
+          this.memfs.fromJSON(state.fs); // Fallback for old state
+        }
         
         this.commits = new Map(state.commits);
         this.branches = new Map(state.branches);
-        this.currentBranch = state.currentBranch;
+        this.currentBranch = state.currentBranch || 'main';
+        this.HEAD = state.detachedHead || 'detached';
         this.commitCounter = state.commitCounter;
         return true;
       }
@@ -65,13 +72,44 @@ export class GitEngine {
     return false;
   }
 
+  private serializeFs(dir: string = '/'): Record<string, string> {
+    const result: Record<string, string> = {};
+    const walk = (currentDir: string) => {
+      const files = this.memfs.readdirSync(currentDir) as string[];
+      for (const file of files) {
+        const fullPath = currentDir === '/' ? `/${file}` : `${currentDir}/${file}`;
+        const stat = this.memfs.statSync(fullPath);
+        if (stat.isDirectory()) {
+          walk(fullPath);
+        } else {
+          const content = this.memfs.readFileSync(fullPath);
+          result[fullPath] = Buffer.from(content).toString('base64');
+        }
+      }
+    };
+    walk(dir);
+    return result;
+  }
+
+  private deserializeFs(data: Record<string, string>) {
+    this.memfs.reset();
+    for (const [filePath, contentBase64] of Object.entries(data)) {
+      const dir = path.dirname(filePath);
+      if (dir !== '/' && !this.memfs.existsSync(dir)) {
+        this.memfs.mkdirSync(dir, { recursive: true });
+      }
+      this.memfs.writeFileSync(filePath, Buffer.from(contentBase64, 'base64'));
+    }
+  }
+
   private saveState(): void {
     try {
       const state = {
-        fs: this.memfs.toJSON(),
+        fsData: this.serializeFs(),
         commits: Array.from(this.commits.entries()),
         branches: Array.from(this.branches.entries()),
         currentBranch: this.currentBranch,
+        detachedHead: this.HEAD,
         commitCounter: this.commitCounter
       };
       
@@ -160,6 +198,8 @@ export class GitEngine {
         return await this.gitBranch(args.slice(1));
       case 'checkout':
         return await this.gitCheckout(args.slice(1));
+      case 'merge':
+        return await this.gitMerge(args.slice(1));
       case 'show':
         return await this.gitShow(args.slice(1));
       case 'version':
@@ -278,7 +318,11 @@ export class GitEngine {
       });
 
       // Update the branch to point to the new commit
-      this.branches.set(this.currentBranch, commitId);
+      if (this.currentBranch !== 'detached') {
+        this.branches.set(this.currentBranch, commitId);
+      } else {
+        this.HEAD = commitId;
+      }
 
       return {
         success: true,
@@ -416,6 +460,16 @@ export class GitEngine {
         // Create new branch
         const newBranch = args[0];
         const currentPointer = this.branches.get(this.currentBranch) || 'HEAD~0';
+        
+        // Actually branch in isomorphic-git
+        if (currentPointer && currentPointer !== 'HEAD~0') {
+          await git.branch({
+            fs: this.memfs as any,
+            dir: '/',
+            ref: newBranch
+          });
+        }
+        
         this.branches.set(newBranch, currentPointer);
         return {
           success: true,
@@ -435,7 +489,8 @@ export class GitEngine {
 
   private async gitCheckout(args: string[]): Promise<CommandResult> {
     try {
-      const target = args[0];
+      const isNewBranch = args.includes('-b');
+      let target = isNewBranch ? args[args.indexOf('-b') + 1] : args[0];
 
       if (!target) {
         return {
@@ -445,19 +500,61 @@ export class GitEngine {
         };
       }
 
-      if (args.includes('-b')) {
+      if (isNewBranch) {
         // Create and checkout new branch
         const currentPointer = this.branches.get(this.currentBranch) || 'HEAD~0';
+        
+        if (currentPointer !== 'HEAD~0') {
+          await git.branch({
+            fs: this.memfs as any,
+            dir: '/',
+            ref: target
+          });
+        }
+        
         this.branches.set(target, currentPointer);
         this.currentBranch = target;
       } else if (this.branches.has(target)) {
         this.currentBranch = target;
       } else {
-        return {
-          success: false,
-          output: '',
-          error: `Branch '${target}' not found`,
-        };
+        // Try to find a matching commit for detached HEAD
+        let targetCommit = target;
+        let found = false;
+        
+        for (const hash of this.commits.keys()) {
+          if (hash.startsWith(target)) {
+            targetCommit = hash;
+            found = true;
+            break;
+          }
+        }
+        
+        if (found) {
+          this.currentBranch = 'detached';
+          this.HEAD = targetCommit;
+          target = targetCommit; // use full hash for isomorphic-git
+        } else {
+          return {
+            success: false,
+            output: '',
+            error: `Branch or commit '${target}' not found`,
+          };
+        }
+      }
+      
+      // Update the file tree to match the checked out branch or commit
+      const commitHash = this.currentBranch === 'detached' ? this.HEAD : this.branches.get(this.currentBranch);
+      if (commitHash && commitHash !== 'HEAD~0') {
+        try {
+          await git.checkout({
+            fs: this.memfs as any,
+            dir: '/',
+            ref: commitHash,
+            force: true // Automatically overwrite unsaved files for sandbox simplicity
+          });
+        } catch (e) {
+          console.error("Checkout file sync error:", e);
+        }
       }
 
       return {
@@ -471,6 +568,78 @@ export class GitEngine {
         success: false,
         output: '',
         error: error instanceof Error ? error.message : 'Failed to checkout',
+      };
+    }
+  }
+
+  private async gitMerge(args: string[]): Promise<CommandResult> {
+    try {
+      const theirs = args[0];
+      if (!theirs) {
+        return { success: false, output: '', error: 'merge requires a branch name' };
+      }
+      if (!this.branches.has(theirs)) {
+        return { success: false, output: '', error: `Branch '${theirs}' not found` };
+      }
+
+      const oursHash = this.branches.get(this.currentBranch) || '';
+      const theirsHash = this.branches.get(theirs) || '';
+
+      const result = await git.merge({
+        fs: this.memfs as any,
+        dir: '/',
+        ours: oursHash,
+        theirs: theirsHash,
+        abortOnConflict: true,
+        author: {
+          name: 'Sandbox User',
+          email: 'user@sandbox.local',
+        }
+      });
+
+      if (result.alreadyMerged) {
+        return {
+          success: true,
+          output: 'Already up to date.',
+          gitGraph: this.getGitGraph(),
+          files: this.getFiles()
+        };
+      }
+
+      const mergeOid = result.oid;
+      
+      if (mergeOid) {
+        // Record the merge commit in our custom tracker
+        const theirPointer = this.branches.get(theirs);
+        const ourPointer = this.branches.get(this.currentBranch);
+        
+        if (result.mergeCommit) {
+          this.commits.set(mergeOid.substring(0, 8), {
+            id: mergeOid.substring(0, 8),
+            message: `Merge branch '${theirs}' into ${this.currentBranch}`,
+            hash: mergeOid.substring(0, 8),
+            parent: ourPointer || null,
+            timestamp: Date.now()
+          });
+          
+          // Note: we can't cleanly draw 2 parents in the custom GitGraph yet, 
+          // but we record the commit so it shows on the graph.
+        }
+        
+        this.branches.set(this.currentBranch, mergeOid.substring(0, 8));
+      }
+
+      return {
+        success: true,
+        output: result.fastForward ? 'Fast-forward merge successful.' : 'Merge commit created successfully.',
+        gitGraph: this.getGitGraph(),
+        files: this.getFiles()
+      };
+    } catch (error) {
+      return {
+        success: false,
+        output: '',
+        error: error instanceof Error ? error.message : 'Merge conflict or error occurred.',
       };
     }
   }
@@ -670,6 +839,13 @@ export class GitEngine {
   }
 
   private getGitGraph(): GitGraph {
+    let headHash = '';
+    if (this.currentBranch === 'detached') {
+      headHash = this.HEAD;
+    } else {
+      headHash = this.branches.get(this.currentBranch) || '';
+    }
+
     return {
       nodes: Array.from(this.commits.values()).map((commit) => ({
         id: commit.id,
@@ -678,7 +854,7 @@ export class GitEngine {
         parent: commit.parent,
       })),
       branches: Object.fromEntries(this.branches),
-      head: 'HEAD',
+      head: headHash,
       currentBranch: this.currentBranch,
     };
   }
